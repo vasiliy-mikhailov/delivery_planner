@@ -1,0 +1,11 @@
+from enum import Enum
+
+
+class AbilityEnum(Enum):
+    SOLUTION_ARCHITECTURE = 1
+    SYSTEM_ANALYSIS = 2
+    DEVELOPMENT = 3
+    SYSTEM_TESTING = 4
+    INTEGRATION_TESTING = 5
+    PRODUCT_OWNERSHIP = 6
+    PROJECT_MANAGEMENT = 7

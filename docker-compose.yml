@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+
+  delivery-planner-server:
+    build:
+      context: ./server
+    command: python manage.py runserver 0.0.0.0:8000
+    container_name: delivery-planner-server
+    depends_on:
+      - delivery-planner-database
+    env_file:
+      - ./server/.env.dev
+    ports:
+      - 8000:8000
+    volumes:
+      - ./server:/usr/src/app
+
+  delivery-planner-database:
+    container_name: delivery-planner-database
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=delivery-planner
+      - POSTGRES_PASSWORD=delivery-planner
+      - POSTGRES_DB=delivery-planner-dev
+    expose:
+      - 5432
+    volumes:
+      - delivery-planner-database:/var/lib/postgresql/data
+
+  delivery-planner-client:
+    build:
+      context: ./client
+    command: npm start
+    container_name: delivery-planner-client
+    depends_on:
+      - delivery-planner-server
+    ports:
+      - 3000:3000
+    stdin_open: true
+    volumes:
+      - ./client:/usr/src/app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
+volumes:
+  delivery-planner-database:
