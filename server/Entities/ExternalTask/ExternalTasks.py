@@ -1,4 +1,4 @@
-from Entities.RepositoryTask.ExternalTask import ExternalTask
+from Entities.ExternalTask.ExternalTask import ExternalTask
 
 class ExternalTasks:
 

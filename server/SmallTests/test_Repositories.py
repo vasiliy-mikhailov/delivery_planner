@@ -1,14 +1,14 @@
 import datetime
 
+import pytest
+
+from Entities.ExternalTask.ExternalTask import ExternalTask
 from Entities.Skill.AbilityEnum import AbilityEnum
 from Inputs.PlanInput import PlanInput
 from Inputs.TaskInput import TaskInput
-from Inputs.ExternalTaskInput import ExternalTaskInput
+from Repository.ExcelExternalTaskRepository import ExcelExternalTaskRepository
 from Repository.ExcelPlanReader import ExcelPlanReader
-from Repository.ExternalTaskReader.ExcelExternalTaskInputsReader import ExcelExternalTaskRowsReader
-from Repository.ExternalTaskReader.ExternalTaskRowsToExternalTaskInputsDataConverter import \
-    ExternalTaskRowsToExternalTaskInputsDataConverter
-from SmallTests.FakeExternalTaskRowsReader import FakeExternalTaskRowsReader
+from SmallTests.FakeExternalTaskRepository import FakeExternalTaskRepository
 
 
 def test_excel_reader_loads_excel():
@@ -139,47 +139,25 @@ def test_excel_reader_loads_excel():
     assert team_member_2_0.ability == AbilityEnum.DEVELOPMENT
     assert team_member_2_0.resource_ids_and_or_quantities == ['SYSDEV-1', '2']
 
-def test_fake_external_task_data_provider_gets_data():
-    fake_external_task_inputs_data_provider = FakeExternalTaskRowsReader()
+def test_fake_external_data_repository_gets_by_id():
+    fake_external_task_repository = FakeExternalTaskRepository()
 
-    data = fake_external_task_inputs_data_provider.read()
+    assert fake_external_task_repository.has_external_task_with_id(external_task_id='CR-1')
+    cr_1 = fake_external_task_repository.get_external_task_by_id(external_task_id='CR-1')
+    assert isinstance(cr_1, ExternalTask)
 
-    assert len(data) == 8
+    assert fake_external_task_repository.has_external_task_with_id(external_task_id='CR-4')
+    cr_4 = fake_external_task_repository.get_external_task_by_id('CR-4')
+    assert isinstance(cr_4, ExternalTask)
 
-def test_fake_repository_fetches_task():
-    external_task_inputs_reader = FakeExternalTaskRowsReader()
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_inputs_reader)
-    external_task_inputs = external_task_inputs_data_converter.convert()
+    assert not fake_external_task_repository.has_external_task_with_id(external_task_id='NON-EXISTENT-ID')
+    with pytest.raises(ValueError):
+        _ = fake_external_task_repository.get_external_task_by_id('NON-EXISTENT-ID')
 
-    assert len(external_task_inputs) == 2
+def test_excel_external_task_repository_holds_attributes():
+    excel_task_repository_reader = ExcelExternalTaskRepository(file_name='./SmallTests/input_excels/external_tasks.xlsx')
 
-    external_task_input_0 = external_task_inputs[0]
+    assert excel_task_repository_reader.file_name == './SmallTests/input_excels/external_tasks.xlsx'
 
-    assert isinstance(external_task_input_0, ExternalTaskInput)
-    assert external_task_input_0.id == 'CR-1'
-    assert external_task_input_0.name == 'Change Request 1'
-    assert external_task_input_0.system == ''
-    assert external_task_input_0.business_line == 'BL-1'
 
-def test_excel_repository_reader_holds_attributes():
-    excel_task_repository_reader = ExcelExternalTaskRowsReader(file_name='foo.xlsx')
-
-    assert excel_task_repository_reader.file_name == 'foo.xlsx'
-
-def test_excel_repository_reader_reads_tasks_from_plan_1_xlsx():
-    external_task_reader = ExcelExternalTaskRowsReader(file_name='./SmallTests/input_excels/Plan1.xlsx')
-
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_reader)
-
-    external_task_inputs = external_task_inputs_data_converter.convert()
-
-    assert len(external_task_inputs) == 4
-
-    task_3 = external_task_inputs[3]
-    assert isinstance(task_3, ExternalTaskInput)
-    assert task_3.id == 'CR-4'
-
-    assert len(task_3.sub_tasks) == 1
 

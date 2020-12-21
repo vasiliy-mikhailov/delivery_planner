@@ -15,13 +15,10 @@ from Interactors.PlannerInteractor.PlanInputToEntitiesConverter import PlanInput
 from Interactors.PlannerInteractor.PlannerInteractor import PlannerInteractor
 from datetime import date
 from Inputs.PlanInput import PlanInput
-from Interactors.PullExternalTasksAndCreateExcelInteractor import PullExternalTasksAndCreateExcelInteractor
 from Outputs.HightlightOutput import HighlightOutput
 from Outputs.PlanOutput import PlanOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanOutput import ResourceCalendarPlanOutput
-from Presenters.ExcelExternalTasksPresenter import ExcelExternalTasksPresenter
-from Repository.ExternalTaskReader.ExternalTaskRowsToExternalTaskInputsDataConverter import ExternalTaskRowsToExternalTaskInputsDataConverter
-from SmallTests.FakeExternalTaskRowsReader import FakeExternalTaskRowsReader
+from SmallTests.FakeExternalTaskRepository import FakeExternalTaskRepository
 from SmallTests.FakePlannerInteractor import FakePlanner
 from SmallTests.FakePlanReader import FakePlanReader
 from Outputs.ResourceUtilizationOutputs.ResourceUtilizationOutput import ResourceUtilizationOutput
@@ -32,23 +29,17 @@ from SmallTests.FakeTaskIdInputReader import FakeTaskIdInputReader
 
 def test_planner_holds_attributes():
     plan_input = PlanInput(start_date=date(2020, 10, 5), end_date=date(2021, 2, 5))
-    external_task_inputs_reader = FakeExternalTaskRowsReader()
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_inputs_reader)
-    external_task_inputs = external_task_inputs_data_converter.convert()
-    sut = PlannerInteractor(plan_input=plan_input, external_task_inputs=external_task_inputs)
+    external_task_repository = FakeExternalTaskRepository()
+    sut = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
     assert isinstance(sut.plan, Plan)
     assert sut.plan.start_date == date(2020, 10, 5)
     assert sut.plan.end_date == date(2021, 2, 5)
-    assert sut.external_task_inputs == external_task_inputs
+    assert sut.external_task_repository == external_task_repository
 
 def test_planner_returns_empty_plan_when_there_are_no_tasks_and_no_resources():
     plan_input = PlanInput(start_date=date(2020, 10, 5), end_date=date(2021, 2, 5))
-    external_task_inputs_reader = FakeExternalTaskRowsReader()
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_inputs_reader)
-    external_task_inputs = external_task_inputs_data_converter.convert()
-    sut = PlannerInteractor(plan_input=plan_input, external_task_inputs=external_task_inputs)
+    external_task_repository = FakeExternalTaskRepository()
+    sut = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
 
     plan_output = sut.interact()
     assert plan_output is not None
@@ -171,11 +162,8 @@ def test_convert_plan_input_to_entities_converts_plan_input_to_entities():
 def test_planner_simulates_execution():
     fake_plan_reader = FakePlanReader()
     plan_input = fake_plan_reader.read()
-    external_task_inputs_reader = FakeExternalTaskRowsReader()
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_inputs_reader)
-    external_task_inputs = external_task_inputs_data_converter.convert()
-    sut = PlannerInteractor(plan_input=plan_input, external_task_inputs=external_task_inputs)
+    external_task_repository = FakeExternalTaskRepository()
+    sut = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
 
     sut.convert_input_to_entities()
     assert len(sut.plan.tasks) == 2
@@ -212,11 +200,8 @@ def test_planner_simulates_execution():
 def test_planner_produces_output():
     fake_plan_reader = FakePlanReader()
     plan_input = fake_plan_reader.read()
-    external_task_inputs_reader = FakeExternalTaskRowsReader()
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_inputs_reader)
-    external_task_inputs = external_task_inputs_data_converter.convert()
-    sut = PlannerInteractor(plan_input=plan_input, external_task_inputs=external_task_inputs)
+    external_task_repository = FakeExternalTaskRepository()
+    sut = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
     plan_output: PlanOutput = sut.interact()
 
     assert len(plan_output.task_resource_supply.rows) == 3
@@ -348,22 +333,6 @@ def test_planner_produces_output():
     assert len(task_0.hours_spent_by_day.values()) > 0
     assert sum(hours_spent for hours_spent in task_0.hours_spent_by_day.values()) == 80
 
-    external_tasks = plan_output.external_tasks
-    assert len(external_tasks) == 2
-
-    external_task_0 = external_tasks[0]
-
-    assert external_task_0.id == 'CR-1'
-    assert external_task_0.name == 'Change Request 1'
-    assert external_task_0.system == ''
-    assert external_task_0.business_line == 'BL-1'
-    assert len(external_task_0.efforts) == 3
-    effort_0 = external_task_0.efforts[0]
-    assert effort_0.ability == AbilityEnum.SOLUTION_ARCHITECTURE
-    assert effort_0.hours == 80
-
-    assert len(external_task_0.sub_tasks) == 2
-
 def test_fake_task_id_input_reader_reads_data():
     fake_task_id_input_reader = FakeTaskIdInputReader()
 
@@ -376,22 +345,6 @@ def test_fake_task_id_input_reader_reads_data():
     assert isinstance(task_id_inputs[1], TaskIdInput)
     assert task_id_inputs[1].id == 'CR-4'
 
-def test_pull_external_tasks_and_create_excel_interactox():
-    #external_task_reader = DbExternalTaskRowsReader(user='jiraro', password='jiraro', host='Jira-db1.mcb.ru/orcl')
-    external_task_inputs_reader = FakeExternalTaskRowsReader()
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_inputs_reader)
-    external_task_inputs = external_task_inputs_data_converter.convert()
-
-    out_file_name = './SmallTests/output_excels/test_pull_external_tasks_and_create_excel_interactox.xlsx'
-    pull_external_tasks_and_create_excel_interactor = PullExternalTasksAndCreateExcelInteractor(external_task_inputs=external_task_inputs)
-    external_task_outputs = pull_external_tasks_and_create_excel_interactor.interact()
-
-    presenter = ExcelExternalTasksPresenter(file_name=out_file_name, external_task_outputs=external_task_outputs)
-
-    _ = presenter.present()
-
-    assert os.path.exists(out_file_name)
 
 
 

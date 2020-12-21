@@ -1,5 +1,7 @@
 import os
 import datetime
+
+from Repository.ExcelExternalTaskRepository import ExcelExternalTaskRepository
 from Repository.ExcelPlanReader import ExcelPlanReader
 from Interactors.PlannerInteractor.PlannerInteractor import PlannerInteractor
 from Outputs.HightlightOutput import HighlightOutput
@@ -11,10 +13,7 @@ from Presenters.ExcelWrapper.ExcelPage import ExcelPage
 from Presenters.ExcelWrapper.ExcelCell import ExcelCell
 import pytest
 from Presenters.ExcelWrapper.ExcelAbilityFormatter import ExcelAbilityFormatter
-from Repository.ExternalTaskReader.ExcelExternalTaskInputsReader import ExcelExternalTaskRowsReader
-from Repository.ExternalTaskReader.ExternalTaskRowsToExternalTaskInputsDataConverter import \
-    ExternalTaskRowsToExternalTaskInputsDataConverter
-from SmallTests.FakeExternalTaskRowsReader import FakeExternalTaskRowsReader
+from SmallTests.FakeExternalTaskRepository import FakeExternalTaskRepository
 from SmallTests.FakePlanReader import FakePlanReader
 from SmallTests.FakePlannerInteractor import FakePlanner
 from Entities.Skill.AbilityEnum import AbilityEnum
@@ -277,11 +276,8 @@ def test_plan_presenter_shows_task_resource_supply():
 def test_task_resource_supply_presenter_shows_excel_for_fake_data():
     fake_plan_reader = FakePlanReader()
     plan_input = fake_plan_reader.read()
-    external_task_inputs_reader = FakeExternalTaskRowsReader()
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_inputs_reader)
-    external_task_inputs = external_task_inputs_data_converter.convert()
-    sut = PlannerInteractor(plan_input=plan_input, external_task_inputs=external_task_inputs)
+    external_task_repository = FakeExternalTaskRepository()
+    sut = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
     plan_output: PlanOutput = sut.interact()
 
     report_file_name = './SmallTests/output_excels/test_task_resource_supply_presenter_shows_excel_for_fake_data.xlsx'
@@ -440,11 +436,8 @@ def test_plan_presenter_shows_resource_utilization_plan():
 def test_presenter_from_real_planner_interactor_produces_output():
     fake_plan_reader = FakePlanReader()
     plan_input = fake_plan_reader.read()
-    external_task_inputs_reader = FakeExternalTaskRowsReader()
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_inputs_reader)
-    external_task_inputs = external_task_inputs_data_converter.convert()
-    sut = PlannerInteractor(plan_input=plan_input, external_task_inputs=external_task_inputs)
+    external_task_repository = FakeExternalTaskRepository()
+    sut = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
     plan_output: PlanOutput = sut.interact()
 
     report_file_name = './SmallTests/output_excels/test_presenter_from_real_planner_interactor_produces_output.xlsx'
@@ -504,13 +497,9 @@ def test_excel_page_collapses_row():
 
 def test_presenter_for_plan1_xlsx():
     reader = ExcelPlanReader(file_name='./SmallTests/input_excels/Plan1.xlsx')
-
     plan_input = reader.read()
-    external_task_reader = ExcelExternalTaskRowsReader(file_name='./SmallTests/input_excels/Plan1.xlsx')
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_reader)
-    external_task_inputs = external_task_inputs_data_converter.convert()
-    planner = PlannerInteractor(plan_input=plan_input, external_task_inputs=external_task_inputs)
+    external_task_repository = FakeExternalTaskRepository()
+    planner = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
     plan_output = planner.interact()
 
     report_file_name = './SmallTests/output_excels/test_presenter_for_plan1.xlsx'
@@ -524,11 +513,8 @@ def test_presenter_for_corp_transactions_xlsx():
     reader = ExcelPlanReader(file_name='./SmallTests/input_excels/Corp.Transactions.xlsx')
 
     plan_input = reader.read()
-    external_task_reader = ExcelExternalTaskRowsReader(file_name='./SmallTests/input_excels/Corp.Transactions.xlsx')
-    external_task_inputs_data_converter = ExternalTaskRowsToExternalTaskInputsDataConverter(
-        external_task_rows_reader=external_task_reader)
-    external_task_inputs = external_task_inputs_data_converter.convert()
-    planner = PlannerInteractor(plan_input=plan_input, external_task_inputs=external_task_inputs)
+    external_task_repository = ExcelExternalTaskRepository(file_name='./SmallTests/input_excels/external_tasks.xlsx')
+    planner = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
     plan_output = planner.interact()
 
     report_file_name = './SmallTests/output_excels/Corp.Transactions.out.xlsx'
@@ -538,48 +524,4 @@ def test_presenter_for_corp_transactions_xlsx():
 
     assert os.path.exists(report_file_name)
 
-def test_plan_presenter_shows_external_task():
-    fake_planner = FakePlanner()
-    fake_plan_reader = FakePlanReader()
-
-    plan_input = fake_plan_reader.read()
-    plan_output = fake_planner.plan(plan_input)
-
-    report_file_name = './SmallTests/output_excels/test_plan_presenter_shows_external_task.xlsx'
-    presenter = ExcelPlanPresenter(report_file_name=report_file_name, plan_output=plan_output)
-
-    report = presenter.present()
-
-    assert os.path.exists(report_file_name)
-    external_tasks_page = report.get_page_by_name('Репозиторий задач')
-    assert external_tasks_page.read_cell(row=0, col=0).value == 'id'
-    assert external_tasks_page.read_cell(row=0, col=1).value == 'Бизнес-линия'
-    assert external_tasks_page.read_cell(row=0, col=2).value == 'Заявка на доработку ПО'
-    assert external_tasks_page.read_cell(row=0, col=3).value == 'Заявка на доработку системы'
-    assert external_tasks_page.read_cell(row=0, col=4).value == 'Подзадача'
-    assert external_tasks_page.read_cell(row=0, col=5).value == 'Система'
-    assert external_tasks_page.read_cell(row=0, col=6).value == 'Архитектор решения (осталось часов)'
-    assert external_tasks_page.read_cell(row=0, col=7).value == 'Системный аналитик (осталось часов)'
-    assert external_tasks_page.read_cell(row=0, col=8).value == 'Разработчик (осталось часов)'
-    assert external_tasks_page.read_cell(row=0, col=9).value == 'Системный тестировщик (осталось часов)'
-    assert external_tasks_page.read_cell(row=0, col=10).value == 'Интеграционный тестировщик (осталось часов)'
-    assert external_tasks_page.read_cell(row=0, col=11).value == 'Владелец продукта (осталось часов)'
-    assert external_tasks_page.read_cell(row=0, col=12).value == 'Руководитель проекта (осталось часов)'
-
-    assert external_tasks_page.read_cell(row=1, col=0).value == 'CR-1'
-    assert external_tasks_page.read_cell(row=1, col=1).value == 'BL-1'
-    assert external_tasks_page.read_cell(row=1, col=2).value == 'Change Request 1'
-    assert external_tasks_page.read_cell(row=1, col=6).value == 80
-    assert external_tasks_page.read_cell(row=1, col=6).number_format == '# ##0.0'
-    assert external_tasks_page.read_cell(row=1, col=10).value == 40
-    assert external_tasks_page.read_cell(row=1, col=10).number_format == '# ##0.0'
-    assert external_tasks_page.read_cell(row=1, col=11).value == 80
-    assert external_tasks_page.read_cell(row=1, col=11).number_format == '# ##0.0'
-
-    assert external_tasks_page.read_cell(row=4, col=0).value == 'DEV-1.1.1'
-    assert external_tasks_page.read_cell(row=4, col=1).value == 'BL-1'
-    assert external_tasks_page.read_cell(row=4, col=4).value == 'Development 1.1'
-    assert external_tasks_page.read_cell(row=4, col=5).value == 'SYS-1'
-    assert external_tasks_page.read_cell(row=4, col=8).value == 120
-    assert external_tasks_page.read_cell(row=4, col=8).number_format == '# ##0.0'
 

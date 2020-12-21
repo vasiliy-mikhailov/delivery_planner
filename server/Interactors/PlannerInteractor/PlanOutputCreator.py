@@ -1,6 +1,4 @@
 from Entities.Plan.Plan import Plan
-from Entities.RepositoryTask.ExternalTask import ExternalTask
-from Entities.RepositoryTask.ExternalTaskEffort import ExternalTaskEffort
 from Entities.Resource.Calendar.Calendar import generate_date_range
 from Entities.Resource.Resource import Resource
 from Entities.Task.Effort.Efforts import Efforts
@@ -10,9 +8,7 @@ from Entities.Team.Member import Member
 from Inputs.EffortInput import EffortInput
 from Inputs.TaskInput import TaskInput
 from Inputs.TeamMemberInput import TeamMemberInput
-from Interactors.ExternalTasksToExternalTaskOutputsConverter import ExternalTasksToExternalTaskOutputsConverter
 from Outputs.EffortOutput import EffortOutput
-from Outputs.ExternalTaskOutput import ExternalTaskOutput
 from Outputs.HightlightOutput import HighlightOutput
 from Outputs.PlanOutput import PlanOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanBottleneckHintOutput import \
@@ -36,10 +32,9 @@ from Outputs.TeamMemberOutput import TeamMemberOutput
 
 class PlanOutputCreator:
 
-    def __init__(self, plan: Plan, task_inputs: [TaskInput], external_tasks: [ExternalTask]):
+    def __init__(self, plan: Plan, task_inputs: [TaskInput]):
         self.plan: Plan = plan
         self.task_inputs: [TaskInput] = task_inputs
-        self.external_tasks: [ExternalTask] = external_tasks
 
     def calculate_task_completion(self, initial_effort: Efforts, remaining_effort: Efforts):
         result = []
@@ -439,7 +434,4 @@ class PlanOutputCreator:
         task_inputs = self.task_inputs
         result.tasks = self.convert_task_inputs_to_task_outputs(task_inputs=task_inputs)
 
-        external_tasks = self.external_tasks
-        convert_external_tasks_to_external_task_outputs = ExternalTasksToExternalTaskOutputsConverter(external_tasks=external_tasks)
-        result.external_tasks = convert_external_tasks_to_external_task_outputs.convert()
         return result

@@ -1,5 +1,4 @@
 from Outputs.PlanOutput import PlanOutput
-from Presenters.ExcelPlanPresenter.ExcelExternalTasksPagePresenter import ExcelExternalTasksPagePresenter
 from Presenters.ExcelPlanPresenter.ExcelInputTaskTreePresenter import ExcelInputTaskTreePresenter
 from Presenters.ExcelPlanPresenter.ExcelPlanPeriodPresenter import ExcelPlanPeriodPresenter
 from Presenters.ExcelPlanPresenter.ExcelTaskResourceSupplyPresenter import \
@@ -51,13 +50,6 @@ class ExcelPlanPresenter:
             report=report
         )
         task_resource_supply_presenter.present()
-
-        external_tasks = self.plan_output.external_tasks
-        excel_external_task_presenter = ExcelExternalTasksPagePresenter(
-            external_tasks=external_tasks,
-            report=report
-        )
-        excel_external_task_presenter.present()
 
         report.write_to_disk_and_close()
 

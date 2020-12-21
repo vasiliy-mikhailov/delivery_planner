@@ -1,5 +1,5 @@
-from Entities.RepositoryTask.ExternalTask import ExternalTask
-from Entities.RepositoryTask.ExternalTaskEffort import ExternalTaskEffort
+from Entities.ExternalTask.ExternalTask import ExternalTask
+from Entities.ExternalTask.ExternalTaskEffort import ExternalTaskEffort
 from Inputs.EffortInput import EffortInput
 from Inputs.ExternalTaskInput import ExternalTaskInput
 
@@ -19,15 +19,16 @@ class ExternalTaskInputsToEntitiesConverter:
         task_name = external_task_input.name
         task_system = external_task_input.system
         task_business_line = external_task_input.business_line
-        external_task_efforts = [self.convert_effort_input_to_external_task_effort(effort_input=effort_input) for effort_input in external_task_input.efforts]
 
         result = ExternalTask(
             id=task_id,
             name=task_name,
             system=task_system,
             business_line=task_business_line,
-            efforts=external_task_efforts
         )
+
+        external_task_efforts = [self.convert_effort_input_to_external_task_effort(effort_input=effort_input) for effort_input in external_task_input.efforts]
+        result.efforts = external_task_efforts
 
         result.sub_tasks = [self.convert_external_task_input_to_external_task(external_task_input=sub_task) for sub_task in external_task_input.sub_tasks]
 

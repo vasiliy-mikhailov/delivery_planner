@@ -2,7 +2,6 @@ from datetime import date
 from Entities.Resource.Calendar.Calendar import generate_date_range
 from Inputs.PlanInput import PlanInput
 from Outputs.EffortOutput import EffortOutput
-from Outputs.ExternalTaskOutput import ExternalTaskOutput
 from Outputs.PlanOutput import PlanOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanBottleneckHintOutput import \
     ResourceCalendarPlanBottleneckHintOutput
@@ -296,35 +295,35 @@ class FakePlanner:
         task_2 = self.generate_second_task_Output()
         return [task_1, task_2]
 
-    def generate_first_external_task_output(self) -> ExternalTaskOutput:
-        task_1 = ExternalTaskOutput(id='CR-1', name='Change Request 1', system='', business_line='BL-1')
+    def generate_first_external_task_output(self) -> TaskOutput:
+        task_1 = TaskOutput(id='CR-1', name='Change Request 1', system='', business_line='BL-1')
         task_1.efforts = [
             EffortOutput(ability=AbilityEnum.SOLUTION_ARCHITECTURE, hours=80.0),
             EffortOutput(ability=AbilityEnum.INTEGRATION_TESTING, hours=40.0),
             EffortOutput(ability=AbilityEnum.PRODUCT_OWNERSHIP, hours=80.0)
         ]
 
-        task_1_1 = ExternalTaskOutput(id='SYSCR-1.1', name='System Change Request 1.1', system='SYS-1', business_line='BL-1')
+        task_1_1 = TaskOutput(id='SYSCR-1.1', name='System Change Request 1.1', system='SYS-1', business_line='BL-1')
         task_1_1.efforts = [
         ]
 
-        task_1_1_1 = ExternalTaskOutput(id='SYSAN-1.1.1', name='System Analysis 1.1', system='SYS-1', business_line='BL-1')
+        task_1_1_1 = TaskOutput(id='SYSAN-1.1.1', name='System Analysis 1.1', system='SYS-1', business_line='BL-1')
         task_1_1_1.efforts = [
             EffortOutput(ability=AbilityEnum.SYSTEM_ANALYSIS, hours=40.0)
         ]
-        task_1_1_2 = ExternalTaskOutput(id='DEV-1.1.1', name='Development 1.1', system='SYS-1', business_line='BL-1')
+        task_1_1_2 = TaskOutput(id='DEV-1.1.1', name='Development 1.1', system='SYS-1', business_line='BL-1')
         task_1_1_2.efforts = [
             EffortOutput(ability=AbilityEnum.DEVELOPMENT, hours=120.0)
         ]
 
-        task_1_1_3 = ExternalTaskOutput(id='SYSTEST-1.1.1', name='System Testing 1.1', system='SYS-1', business_line='BL-1')
+        task_1_1_3 = TaskOutput(id='SYSTEST-1.1.1', name='System Testing 1.1', system='SYS-1', business_line='BL-1')
         task_1_1_3.efforts = [
             EffortOutput(ability=AbilityEnum.SYSTEM_TESTING, hours=40.0)
         ]
 
         task_1_1.sub_tasks = [task_1_1_1, task_1_1_2, task_1_1_3]
 
-        task_1_2 = ExternalTaskOutput(id='SYSCR-1.2', name='System Change Request 1.2', system='SYS-2', business_line='BL-1')
+        task_1_2 = TaskOutput(id='SYSCR-1.2', name='System Change Request 1.2', system='SYS-2', business_line='BL-1')
         task_1_2.efforts = [
             EffortOutput(ability=AbilityEnum.SYSTEM_ANALYSIS, hours=400.0),
             EffortOutput(ability=AbilityEnum.DEVELOPMENT, hours=1200),
