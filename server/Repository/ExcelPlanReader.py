@@ -44,8 +44,8 @@ class ExcelPlanReader:
         'Управление продуктом': AbilityEnum.PRODUCT_OWNERSHIP
     }
 
-    def __init__(self, file_name: str):
-        self.file_name: str = file_name
+    def __init__(self, file_name_or_io: str):
+        self.file_name_or_io: str = file_name_or_io
 
     def sheet_exists(self, file_name: str, sheet_name: str):
         try:
@@ -56,7 +56,7 @@ class ExcelPlanReader:
 
     def read_task_ids_to_add_from_sheet(self, sheet_name: str):
         result = []
-        task_ids_to_add_sheet = pd.read_excel(self.file_name, sheet_name=sheet_name)
+        task_ids_to_add_sheet = pd.read_excel(self.file_name_or_io, sheet_name=sheet_name)
         for index, row in task_ids_to_add_sheet.iterrows():
             task_id = row['id']
             task_id_input = TaskIdInput(id=task_id)
@@ -66,14 +66,14 @@ class ExcelPlanReader:
 
     def read_task_ids_to_add(self):
         sheet_name = 'Добавить заявки по id'
-        file_name = self.file_name
+        file_name = self.file_name_or_io
         if self.sheet_exists(file_name=file_name, sheet_name=sheet_name):
             return self.read_task_ids_to_add_from_sheet(sheet_name=sheet_name)
         else:
             return []
 
     def read_plan_dates(self):
-        period_sheet = pd.read_excel(self.file_name, sheet_name='Период расчета', header=None, names=['label', 'date'])
+        period_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Период расчета', header=None, names=['label', 'date'])
         dates = period_sheet['date'].tolist()
         start = dates[0].date()
         end = dates[1].date()
@@ -140,7 +140,7 @@ class ExcelPlanReader:
 
     def read_tasks_and_team_members(self):
         tasks = []
-        tasks_sheet = pd.read_excel(self.file_name, sheet_name='Заявки')
+        tasks_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Заявки')
         for index, row in tasks_sheet.iterrows():
             if self.excel_cell_contains_value(value=row['Заявка на доработку ПО']):
                 task = self.read_task_from_row(row=row, task_name_col='Заявка на доработку ПО')
@@ -196,7 +196,7 @@ class ExcelPlanReader:
 
     def read_predecessors(self, tasks: [TaskInput]):
         result = []
-        tasks_sheet = pd.read_excel(self.file_name, sheet_name='Заявки')
+        tasks_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Заявки')
         for index, row in tasks_sheet.iterrows():
             task_id = row['id']
             predecessor_ids = row['Предшественники']
@@ -223,7 +223,7 @@ class ExcelPlanReader:
 
     def read_vacations(self):
         result = []
-        vacations_sheet = pd.read_excel(self.file_name, sheet_name='Отпуска')
+        vacations_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Отпуска')
         for index, row in vacations_sheet.iterrows():
             if row['id ресурса']:
                 resource_id = row['id ресурса']
@@ -236,7 +236,7 @@ class ExcelPlanReader:
 
     def read_existing_resources(self):
         result = []
-        existing_resources_sheet = pd.read_excel(self.file_name, sheet_name='Существующие ресурсы')
+        existing_resources_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Существующие ресурсы')
         existing_resources_sheet = existing_resources_sheet.fillna('')
         for index, row in existing_resources_sheet.iterrows():
             if row['id']:
@@ -257,7 +257,7 @@ class ExcelPlanReader:
     def read_planned_resources(self):
         result = []
 
-        planned_resources_sheet = pd.read_excel(self.file_name, sheet_name='Планируемые ресурсы')
+        planned_resources_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Планируемые ресурсы')
         planned_resources_sheet = planned_resources_sheet.fillna('')
         for index, row in planned_resources_sheet.iterrows():
             planned_resource = PlannedResourceInput(

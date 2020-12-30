@@ -7,9 +7,9 @@ from Entities.Skill.AbilityEnum import AbilityEnum
 
 
 class ExcelExternalTaskRepository:
-    def __init__(self, file_name: str):
-        self.file_name: str = file_name
-        self.task_data_frame = pd.read_excel(self.file_name, sheet_name=0)
+    def __init__(self, file_name_or_io):
+        self.file_name_or_io = file_name_or_io
+        self.task_data_frame = pd.read_excel(self.file_name_or_io, sheet_name=0)
 
     def excel_cell_contains_value(self, value) -> bool:
         if isinstance(value, float) and math.isnan(value):
@@ -30,7 +30,6 @@ class ExcelExternalTaskRepository:
             id=id,
             name=name,
             system=system,
-            business_line=''
         )
 
         self.append_efforts_if_greater_than_zero(external_task=result, hours_value=external_task_row['SYSTEM_ANALYSIS_HOURS_LEFT'], ability=AbilityEnum.SYSTEM_ANALYSIS)
@@ -63,7 +62,7 @@ class ExcelExternalTaskRepository:
             return self.read_external_tasks_from_rows(external_task_rows=external_task_rows, level=1)[0]
         else:
             raise ValueError(
-                'ExcelExternalTaskRepository get_external_task_by_id expected to find 1 task with id {}, but {} found.'.format(
+                'ExcelExternalTaskRepository get_external_task_by_id expected exactly 1 task with id {}, but {} found.'.format(
                     external_task_id, len(external_task_rows)))
 
     def has_external_task_with_id(self, external_task_id: str) -> bool:
@@ -73,3 +72,9 @@ class ExcelExternalTaskRepository:
         has_exactly_one_task_with_id = len(external_task_rows) == 1
 
         return has_exactly_one_task_with_id
+
+    def get_all(self) -> [ExternalTask]:
+        task_data_frame = self.task_data_frame
+        first_level_external_task_rows = task_data_frame[task_data_frame['PARENT_ID'].isnull()]
+
+        return self.read_external_tasks_from_rows(external_task_rows=first_level_external_task_rows, level=1)

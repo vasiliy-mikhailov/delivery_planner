@@ -1,25 +1,28 @@
-import logo from './logo.svg';
 import './App.css';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const uploadExternalTasks = (external_tasks_files: FileList) => {
+        const externalTasksFormData = new FormData()
+        const externalTasksFile = external_tasks_files[0]
+        externalTasksFormData.append('external_tasks_file', externalTasksFile)
+        fetch('http://localhost:8000/delivery_planner_app/upload_external_tasks', {
+            method: 'PUT',
+            body: externalTasksFormData
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+            })
+            .catch(error => {
+                console.error(error)
+            })
+    }
+
+    return (
+        <div className="App">
+            <input type="file" id="externalTasksFileInput" onChange={(e) => uploadExternalTasks(e.target.files)}/>
+        </div>
+    );
 }
 
 export default App;

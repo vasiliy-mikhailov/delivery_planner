@@ -1,4 +1,7 @@
 import pytest
+
+from Entities.ExternalTask.ExternalTask import ExternalTask
+from Entities.ExternalTask.ExternalTaskEffort import ExternalTaskEffort
 from Entities.Resource.Calendar.Calendar import generate_date_range
 from Entities.Resource.Calendar.VacationCalendar import VacationCalendar
 from Entities.Assignment.AssignmentEntry import AssignmentEntry, quantize_resource_spent_hours
@@ -445,3 +448,67 @@ def test_assignments_get_assignment_list_for_task_and_resource_returns_assignmen
     assert assignment_entry_2_1 in assignment_entries
     assert assignment_entry_2_2 in assignment_entries
 
+def test_external_task_equals_by_attributes():
+    external_task_1 = ExternalTask(
+        id='CR-1',
+        name='Change Request 1',
+        system=''
+    )
+
+    external_task_1.efforts = [
+        ExternalTaskEffort(
+            ability=AbilityEnum.SYSTEM_ANALYSIS,
+            hours=8
+        ),
+        ExternalTaskEffort(
+            ability=AbilityEnum.DEVELOPMENT,
+            hours=80
+        )
+    ]
+
+    external_task_1_1 = ExternalTask(
+        id='SYS-CR-1.1',
+        name='System Change Request 1.1',
+        system='SYS-1'
+    )
+
+    external_task_1_2 = ExternalTask(
+        id='SYS-CR-1.2',
+        name='System Change Request 1.2',
+        system='SYS-2'
+    )
+
+    external_task_1.sub_tasks = [external_task_1_1, external_task_1_2]
+
+    external_task_2 = ExternalTask(
+        id='CR-1',
+        name='Change Request 1',
+        system=''
+    )
+
+    external_task_2.efforts = [
+        ExternalTaskEffort(
+            ability=AbilityEnum.DEVELOPMENT,
+            hours=80
+        ),
+        ExternalTaskEffort(
+            ability=AbilityEnum.SYSTEM_ANALYSIS,
+            hours=8
+        )
+    ]
+
+    external_task_2_1 = ExternalTask(
+        id='SYS-CR-1.1',
+        name='System Change Request 1.1',
+        system='SYS-1'
+    )
+
+    external_task_2_2 = ExternalTask(
+        id='SYS-CR-1.2',
+        name='System Change Request 1.2',
+        system='SYS-2'
+    )
+
+    external_task_2.sub_tasks = [external_task_2_2, external_task_2_1]
+
+    assert external_task_1 == external_task_2

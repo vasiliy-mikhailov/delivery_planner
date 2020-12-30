@@ -28,12 +28,11 @@ class PlannerInteractor:
         task_id = external_task.id
         task_name = external_task.name
         task_system = external_task.system
-        task_business_line = external_task.business_line
         result = TaskInput(
             id=task_id,
             name=task_name,
             system=task_system,
-            business_line=task_business_line
+            business_line=''
         )
 
         efforts = [self.convert_external_task_effort_to_effort_input(external_task_effort) for external_task_effort in external_task.efforts]

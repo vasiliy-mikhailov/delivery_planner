@@ -1,7 +1,6 @@
 import os
 import datetime
 
-from Repository.ExcelExternalTaskRepository import ExcelExternalTaskRepository
 from Repository.ExcelPlanReader import ExcelPlanReader
 from Interactors.PlannerInteractor.PlannerInteractor import PlannerInteractor
 from Outputs.HightlightOutput import HighlightOutput
@@ -33,7 +32,7 @@ def test_excel_report_creates_file():
 
 
 def test_excel_report_creates_page():
-    report = ExcelReport(excel_file_name='./SmallTests/output_excels/test_excel_report_creates_page.xlsx')
+    report = ExcelReport(excel_file_name_or_io='./SmallTests/output_excels/test_excel_report_creates_page.xlsx')
     page = report.add_page_named(page_name='Bar')
     assert isinstance(page, ExcelPage)
     assert page.get_name() == 'Bar'
@@ -47,7 +46,7 @@ def test_excel_report_creates_page():
 
 
 def test_excel_report_throws_error_if_does_not_find_page():
-    report = ExcelReport(excel_file_name='./SmallTests/output_excels/test_excel_report_throws_error_if_does_not_find_page.xlsx')
+    report = ExcelReport(excel_file_name_or_io='./SmallTests/output_excels/test_excel_report_throws_error_if_does_not_find_page.xlsx')
     report.add_page_named(page_name='Bar')
     report.write_to_disk_and_close()
 
@@ -56,7 +55,7 @@ def test_excel_report_throws_error_if_does_not_find_page():
 
 
 def test_excel_page_holds_data():
-    report = ExcelReport(excel_file_name='./SmallTests/output_excels/test_excel_page_holds_data.xlsx')
+    report = ExcelReport(excel_file_name_or_io='./SmallTests/output_excels/test_excel_page_holds_data.xlsx')
     page = report.add_page_named(page_name='Bar')
     report.write_to_disk_and_close()
 
@@ -64,7 +63,7 @@ def test_excel_page_holds_data():
 
 
 def test_excel_page_freezes_row_and_column_and_returns_frozen_row_and_column():
-    report = ExcelReport(excel_file_name='./SmallTests/output_excels/test_excel_page_freezes_row_and_column_and_returns_frozen_row_and_column.xlsx')
+    report = ExcelReport(excel_file_name_or_io='./SmallTests/output_excels/test_excel_page_freezes_row_and_column_and_returns_frozen_row_and_column.xlsx')
     page = report.add_page_named(page_name='Bar')
     page.freeze_row_and_column(top_row=1, left_column=2)
     report.write_to_disk_and_close()
@@ -72,7 +71,7 @@ def test_excel_page_freezes_row_and_column_and_returns_frozen_row_and_column():
     assert page.get_frozen_row_and_column() == (1, 2)
 
 def test_get_frozen_row_and_column_raises_value_error_if_was_not_frozen():
-    report = ExcelReport(excel_file_name='./SmallTests/output_excels/test_get_frozen_row_and_column_raises_value_error_if_was_not_frozen.xlsx')
+    report = ExcelReport(excel_file_name_or_io='./SmallTests/output_excels/test_get_frozen_row_and_column_raises_value_error_if_was_not_frozen.xlsx')
     page = report.add_page_named(page_name='Bar')
     report.write_to_disk_and_close()
 
@@ -81,7 +80,7 @@ def test_get_frozen_row_and_column_raises_value_error_if_was_not_frozen():
 
 
 def test_get_hint_for_row_and_column_returns_previously_supplied_data():
-    report = ExcelReport(excel_file_name='./SmallTests/output_excels/test_get_hint_for_row_and_column_returns_previously_supplied_data.xlsx')
+    report = ExcelReport(excel_file_name_or_io='./SmallTests/output_excels/test_get_hint_for_row_and_column_returns_previously_supplied_data.xlsx')
     page = report.add_page_named(page_name='Bar')
     page.set_hint_for_row_and_col(row=0, col=1, hint='Foo')
     report.write_to_disk_and_close()
@@ -150,7 +149,7 @@ def test_plan_presenter_shows_plan_period():
     plan_output = fake_planner.plan(plan_input)
 
     report_file_name = './SmallTests/output_excels/test_plan_presenter_shows_task_resource_supply.xlsx'
-    presenter = ExcelPlanPresenter(report_file_name=report_file_name, plan_output=plan_output)
+    presenter = ExcelPlanPresenter(report_file_name_or_io=report_file_name, plan_output=plan_output)
 
     report = presenter.present()
 
@@ -171,7 +170,7 @@ def test_plan_presenter_shows_tasks():
     plan_output = fake_planner.plan(plan_input)
 
     report_file_name = './SmallTests/output_excels/test_plan_presenter_shows_tasks.xlsx'
-    presenter = ExcelPlanPresenter(report_file_name=report_file_name, plan_output=plan_output)
+    presenter = ExcelPlanPresenter(report_file_name_or_io=report_file_name, plan_output=plan_output)
 
     report = presenter.present()
 
@@ -226,7 +225,7 @@ def test_plan_presenter_shows_task_resource_supply():
     plan_output = fake_planner.plan(plan_input)
 
     report_file_name = './SmallTests/output_excels/test_plan_presenter_shows_task_resource_supply.xlsx'
-    presenter = ExcelPlanPresenter(report_file_name=report_file_name, plan_output=plan_output)
+    presenter = ExcelPlanPresenter(report_file_name_or_io=report_file_name, plan_output=plan_output)
 
     report = presenter.present()
 
@@ -281,7 +280,7 @@ def test_task_resource_supply_presenter_shows_excel_for_fake_data():
     plan_output: PlanOutput = sut.interact()
 
     report_file_name = './SmallTests/output_excels/test_task_resource_supply_presenter_shows_excel_for_fake_data.xlsx'
-    presenter = ExcelPlanPresenter(report_file_name=report_file_name, plan_output=plan_output)
+    presenter = ExcelPlanPresenter(report_file_name_or_io=report_file_name, plan_output=plan_output)
 
     presenter.present()
 
@@ -293,7 +292,7 @@ def test_plan_presenter_shows_resource_calendar_plan():
     plan_output = fake_planner.plan(plan_input)
 
     report_file_name = './SmallTests/output_excels/test_plan_presenter_shows_resource_calendar_plan.xlsx'
-    presenter = ExcelPlanPresenter(report_file_name=report_file_name, plan_output=plan_output)
+    presenter = ExcelPlanPresenter(report_file_name_or_io=report_file_name, plan_output=plan_output)
 
     report = presenter.present()
 
@@ -403,7 +402,7 @@ def test_plan_presenter_shows_resource_utilization_plan():
     plan_output = fake_planner.plan(plan_input)
 
     report_file_name = './SmallTests/output_excels/test_plan_presenter_shows_resource_utilization_plan.xlsx'
-    presenter = ExcelPlanPresenter(report_file_name=report_file_name, plan_output=plan_output)
+    presenter = ExcelPlanPresenter(report_file_name_or_io=report_file_name, plan_output=plan_output)
 
     report = presenter.present()
 
@@ -441,7 +440,7 @@ def test_presenter_from_real_planner_interactor_produces_output():
     plan_output: PlanOutput = sut.interact()
 
     report_file_name = './SmallTests/output_excels/test_presenter_from_real_planner_interactor_produces_output.xlsx'
-    presenter = ExcelPlanPresenter(report_file_name=report_file_name, plan_output=plan_output)
+    presenter = ExcelPlanPresenter(report_file_name_or_io=report_file_name, plan_output=plan_output)
 
     _ = presenter.present()
 
@@ -476,7 +475,7 @@ def test_excel_cell_returns_column_width_for_string_date_float():
     assert percent_cell.get_autofit_cell_width() == 5
 
 def test_excel_page_autofits_column():
-    report = ExcelReport(excel_file_name='./SmallTests/output_excels/test_excel_page_autofits_column.xlsx')
+    report = ExcelReport(excel_file_name_or_io='./SmallTests/output_excels/test_excel_page_autofits_column.xlsx')
     page = report.add_page_named(page_name='Foo')
     page.write_cell(row=0, col=0, cell=ExcelCell('Short string'))
     page.write_cell(row=1, col=0, cell=ExcelCell('Very very very long string'))
@@ -486,7 +485,7 @@ def test_excel_page_autofits_column():
     report.auto_fit_all_columns_on_all_pages()
 
 def test_excel_page_collapses_row():
-    report = ExcelReport(excel_file_name='./SmallTests/output_excels/test_excel_page_collapses_row.xlsx')
+    report = ExcelReport(excel_file_name_or_io='./SmallTests/output_excels/test_excel_page_collapses_row.xlsx')
     page = report.add_page_named(page_name='Foo')
     page.write_cell(row=0, col=0, cell=ExcelCell('Bar'))
     page.write_cell(row=1, col=0, cell=ExcelCell('Buz'))
@@ -496,32 +495,18 @@ def test_excel_page_collapses_row():
     report.write_to_disk_and_close()
 
 def test_presenter_for_plan1_xlsx():
-    reader = ExcelPlanReader(file_name='./SmallTests/input_excels/Plan1.xlsx')
+    reader = ExcelPlanReader(file_name_or_io='./SmallTests/input_excels/Plan1.xlsx')
     plan_input = reader.read()
     external_task_repository = FakeExternalTaskRepository()
     planner = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
     plan_output = planner.interact()
 
     report_file_name = './SmallTests/output_excels/test_presenter_for_plan1.xlsx'
-    presenter = ExcelPlanPresenter(report_file_name=report_file_name, plan_output=plan_output)
+    presenter = ExcelPlanPresenter(report_file_name_or_io=report_file_name, plan_output=plan_output)
 
     _ = presenter.present()
 
     assert os.path.exists(report_file_name)
 
-def test_presenter_for_corp_transactions_xlsx():
-    reader = ExcelPlanReader(file_name='./SmallTests/input_excels/Corp.Transactions.xlsx')
-
-    plan_input = reader.read()
-    external_task_repository = ExcelExternalTaskRepository(file_name='./SmallTests/input_excels/external_tasks.xlsx')
-    planner = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
-    plan_output = planner.interact()
-
-    report_file_name = './SmallTests/output_excels/Corp.Transactions.out.xlsx'
-    presenter = ExcelPlanPresenter(report_file_name=report_file_name, plan_output=plan_output)
-
-    _ = presenter.present()
-
-    assert os.path.exists(report_file_name)
 
 

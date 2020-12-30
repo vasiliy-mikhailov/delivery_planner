@@ -6,13 +6,13 @@ from Entities.ExternalTask.ExternalTask import ExternalTask
 from Entities.Skill.AbilityEnum import AbilityEnum
 from Inputs.PlanInput import PlanInput
 from Inputs.TaskInput import TaskInput
-from Repository.ExcelExternalTaskRepository import ExcelExternalTaskRepository
+from Repository.ExternalTaskRepository.ExcelExternalTaskRepository import ExcelExternalTaskRepository
 from Repository.ExcelPlanReader import ExcelPlanReader
 from SmallTests.FakeExternalTaskRepository import FakeExternalTaskRepository
 
 
 def test_excel_reader_loads_excel():
-    sut = ExcelPlanReader(file_name='./SmallTests/input_excels/Plan1.xlsx')
+    sut = ExcelPlanReader(file_name_or_io='./SmallTests/input_excels/Plan1.xlsx')
     plan_input = sut.read()
 
     assert isinstance(plan_input, PlanInput)
@@ -155,9 +155,9 @@ def test_fake_external_data_repository_gets_by_id():
         _ = fake_external_task_repository.get_external_task_by_id('NON-EXISTENT-ID')
 
 def test_excel_external_task_repository_holds_attributes():
-    excel_task_repository_reader = ExcelExternalTaskRepository(file_name='./SmallTests/input_excels/external_tasks.xlsx')
+    excel_task_repository_reader = ExcelExternalTaskRepository(file_name_or_io='./SmallTests/input_excels/external_tasks.xlsx')
 
-    assert excel_task_repository_reader.file_name == './SmallTests/input_excels/external_tasks.xlsx'
+    assert excel_task_repository_reader.file_name_or_io == './SmallTests/input_excels/external_tasks.xlsx'
 
 
 

@@ -10,12 +10,12 @@ from Presenters.ExcelWrapper.ExcelReport import ExcelReport
 
 class ExcelPlanPresenter:
 
-    def __init__(self, report_file_name: str, plan_output: PlanOutput):
-        self.report_file_name: str = report_file_name
+    def __init__(self, report_file_name_or_io, plan_output: PlanOutput):
+        self.report_file_name_or_io = report_file_name_or_io
         self.plan_output: PlanOutput = plan_output
 
     def present(self):
-        report = ExcelReport(excel_file_name=self.report_file_name)
+        report = ExcelReport(excel_file_name_or_io=self.report_file_name_or_io)
 
         start_date = self.plan_output.start_date
         end_date = self.plan_output.end_date

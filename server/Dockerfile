@@ -21,6 +21,10 @@ RUN pip install -r requirements.txt
 # copy project
 COPY . .
 
+RUN adduser user --gecos "" --disabled-password
+
 # wait for database availability and run migrations
 RUN chmod +x entrypoint.sh
+
+USER user
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

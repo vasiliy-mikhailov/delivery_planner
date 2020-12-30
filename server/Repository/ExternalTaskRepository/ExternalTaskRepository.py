@@ -8,3 +8,9 @@ class ExternalTaskRepository:
 
     def has_external_task_with_id(self, external_task_id: str) -> bool:
         raise NotImplementedError
+
+    def get_all(self) -> [ExternalTask]:
+        raise NotImplementedError
+
+    def save(self, external_task: ExternalTask):
+        raise NotImplementedError

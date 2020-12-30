@@ -4,9 +4,9 @@ from Presenters.ExcelWrapper.ExcelPage import ExcelPage
 
 class ExcelReport:
 
-    def __init__(self, excel_file_name: str):
-        self.excel_file_name: str = excel_file_name
-        self.workbook: Workbook = Workbook(excel_file_name, {'in_memory': True})
+    def __init__(self, excel_file_name_or_io):
+        self.excel_file_name_or_io: str = excel_file_name_or_io
+        self.workbook: Workbook = Workbook(excel_file_name_or_io, {'in_memory': True})
         self.pages: [ExcelPage] = []
 
     def write_to_disk_and_close(self):
