@@ -42,6 +42,8 @@ services:
       - ./client:/usr/src/app
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=1000
+      - REACT_APP_DELIVERY_PLANNER_APP_URL=http://localhost:8000/delivery_planner_app
 
 volumes:
   delivery-planner-database:

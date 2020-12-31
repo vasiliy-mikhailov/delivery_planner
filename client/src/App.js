@@ -1,11 +1,16 @@
 import './App.css';
 
 function App() {
+    const deliveryPlannerAppUrl = `${process.env.REACT_APP_DELIVERY_PLANNER_APP_URL}`;
+
+    const uploadExternalTasksUrl = `${deliveryPlannerAppUrl}/upload_external_tasks`
+
     const uploadExternalTasks = (external_tasks_files: FileList) => {
         const externalTasksFormData = new FormData()
         const externalTasksFile = external_tasks_files[0]
         externalTasksFormData.append('external_tasks_file', externalTasksFile)
-        fetch('http://localhost:8000/delivery_planner_app/upload_external_tasks', {
+
+        fetch(uploadExternalTasksUrl, {
             method: 'PUT',
             body: externalTasksFormData
         })
