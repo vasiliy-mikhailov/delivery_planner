@@ -21,16 +21,16 @@ phases:
       - >
         docker build \
           -f server/Dockerfile.prod \
-          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/server:prod \
+          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-server:prod \
           ./server
       - >
         docker build \
           -f client/Dockerfile.prod \
-          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/client:prod \
+          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod \
           --build-arg NODE_ENV=production \
           --build-arg REACT_APP_API_SERVICE_URL=$REACT_APP_API_SERVICE_URL \
           ./client
   post_build:
     commands:
-    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/server:prod
-    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/client:prod
+    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-server:prod
+    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod
