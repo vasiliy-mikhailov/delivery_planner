@@ -38,7 +38,7 @@ phases:
           -f client/Dockerfile.prod \
           -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:builder \
           --build-arg NODE_ENV=production \
-          --build-arg REACT_APP_API_SERVICE_URL=$REACT_APP_API_SERVICE_URL \
+          --build-arg REACT_APP_DELIVERY_PLANNER_APP_URL=REACT_APP_DELIVERY_PLANNER_APP_URL \
           ./client
       - >
         docker build \
