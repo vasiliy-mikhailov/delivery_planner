@@ -15,16 +15,34 @@ phases:
       - >
         aws ecr get-login-password --region $AWS_REGION \
           | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-server:prod || true
+      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:builder || true
+      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod || true
   build:
     commands:
-      - echo building images...
+      - echo building and testing dev images
+      - docker-compose up -d --build
+      - docker-compose exec delivery-planner-server python -m pytest -n 8 -p no:warnings --cov=. --ignore=delivery_planner_app
+      - docker-compose exec delivery-planner-server python manage.py test      
+      - echo building prod images...
       - >
         docker build \
+          --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-server:prod \
           -f server/Dockerfile.prod \
           -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-server:prod \
           ./server
       - >
         docker build \
+          --target builder \
+          --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:builder \
+          -f client/Dockerfile.prod \
+          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod \
+          --build-arg NODE_ENV=production \
+          --build-arg REACT_APP_API_SERVICE_URL=$REACT_APP_API_SERVICE_URL \
+          ./client
+      - >
+        docker build \
+          --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod \
           -f client/Dockerfile.prod \
           -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod \
           --build-arg NODE_ENV=production \
@@ -33,4 +51,5 @@ phases:
   post_build:
     commands:
     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-server:prod
+    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:builder
     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod
