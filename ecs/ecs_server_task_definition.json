@@ -1,0 +1,68 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "delivery-planner-server",
+      "image": "%s.dkr.ecr.%s.amazonaws.com/delivery-planner-server:prod",
+      "essential": true,
+      "memoryReservation": 300,
+      "portMappings": [
+        {
+          "hostPort": 0,
+          "protocol": "tcp",
+          "containerPort": 8000
+        }
+      ],
+      "environment": [
+      "environment": [
+        {
+          "name": "CORS_ORIGIN_WHITELIST",
+          "value": "http://localhost:3000 http://127.0.0.1:3000"
+        },
+        {
+          "name": "DEBUG",
+          "value": "0"
+        },
+        {
+          "name": "DJANGO_ALLOWED_HOSTS",
+          "value": "*"
+        },
+        {
+          "name": "SECRET_KEY",
+          "value": "%s"
+        },
+        {
+          "name": "SQL_DATABASE",
+          "value": "delivery_planner_prod"
+        },
+        {
+          "name": "SQL_ENGINE",
+          "value": "django.db.backends.postgresql"
+        },
+        {
+          "name": "SQL_HOST",
+          "value": "%s"
+        },
+        {
+          "name": "SQL_PASSWORD",
+          "value": "%s"
+        },
+        {
+          "name": "SQL_PORT",
+          "value": "5432"
+        },
+        {
+          "name": "SQL_USER",
+          "value": "postgres"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "delivery-planner-server-logs",
+          "awslogs-region": "%s"
+        }
+      }
+    }
+  ],
+  "family": "delivery-planner-server-task-definition"
+}

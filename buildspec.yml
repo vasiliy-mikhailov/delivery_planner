@@ -1,10 +1,5 @@
 version: 0.2
 
-env:
-  variables:
-    AWS_REGION: "eu-central-1"
-    REACT_APP_DELIVERY_PLANNER_APP_URL: "http://dp.scrumai.com/delivery_planner_app"
-
 phases:
   install:
     runtime-versions:
@@ -39,5 +34,7 @@ phases:
           ./client
   post_build:
     commands:
-    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-server:prod
-    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-server:prod
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod
+      - chmod +x ./deploy.sh
+      - bash deploy.sh

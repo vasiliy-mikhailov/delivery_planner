@@ -1,0 +1,25 @@
+{
+  "containerDefinitions": [
+    {
+      "name": "delivery-planner-client",
+      "image": "%s.dkr.ecr.%s.amazonaws.com/delivery-planner-client:prod",
+      "essential": true,
+      "memoryReservation": 300,
+      "portMappings": [
+        {
+          "hostPort": 0,
+          "protocol": "tcp",
+          "containerPort": 80
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "delivery-planner-client-logs",
+          "awslogs-region": "%s"
+        }
+      }
+    }
+  ],
+  "family": "delivery-planner-client-task-definition"
+}
