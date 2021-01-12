@@ -6,7 +6,6 @@ services:
     build:
       context: ./server
       dockerfile: Dockerfile
-    entrypoint: ['/usr/src/app/entrypoint.sh']
     container_name: delivery-planner-server
     depends_on:
       - delivery-planner-database

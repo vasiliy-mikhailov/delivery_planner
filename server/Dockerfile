@@ -21,6 +21,7 @@ RUN pip install -r requirements.txt
 # copy project
 COPY . .
 
-# wait for database availability and run migrations
+# wait for database availability, run migrations and start server
 RUN chmod +x entrypoint.sh
 
+ENTRYPOINT ["./entrypoint.sh"]

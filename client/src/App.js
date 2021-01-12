@@ -50,6 +50,7 @@ function App() {
     }
 
     const planDelivery = (params: {deliveryPlanFile: File}) => {
+	alert(planDeliveryUrl)
         const deliveryPlanFormData = new FormData()
         deliveryPlanFormData.append('plan_file', params.deliveryPlanFile)
 
