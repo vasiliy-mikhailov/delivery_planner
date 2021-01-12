@@ -27,9 +27,6 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile.prod
-      args:
-        - NODE_ENV=production
-        - REACT_APP_DELIVERY_PLANNER_APP_URL=${REACT_APP_DELIVERY_PLANNER_APP_URL}
     ports:
       - 80:80
     depends_on:

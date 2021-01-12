@@ -18,11 +18,12 @@ RUN npm ci
 #RUN npm install react-scripts@4.0.0
 
 
-# set environment variables
-ARG REACT_APP_DELIVERY_PLANNER_APP_URL
-ENV REACT_APP_DELIVERY_PLANNER_APP_URL $REACT_APP_DELIVERY_PLANNER_APP_URL
-ARG NODE_ENV
-ENV NODE_ENV $NODE_ENV
+# set build time environment variables
+ARG REACT_APP_DELIVERY_PLANNER_APP_URL=http://dp.scrumai.com/delivery_planner_app
+ARG NODE_ENV=production
+
+# set run time environment variables
+ENV NODE_ENV=production
 
 # create build
 COPY . .
