@@ -9,8 +9,17 @@ services:
     container_name: delivery-planner-server
     depends_on:
       - delivery-planner-database
-    env_file:
-      - ./server/.env.dev
+    environment:
+      - DEBUG=1
+      - SECRET_KEY=super-secret-dev-key
+      - DJANGO_ALLOWED_HOSTS=*
+      - CORS_ORIGIN_WHITELIST=http://localhost:3000 http://127.0.0.1:3000
+      - SQL_ENGINE=django.db.backends.postgresql
+      - SQL_DATABASE=delivery-planner-dev
+      - SQL_USER=delivery-planner
+      - SQL_PASSWORD=delivery-planner
+      - SQL_HOST=delivery-planner-database
+      - SQL_PORT=5432
     ports:
       - 8000:8000
     volumes:

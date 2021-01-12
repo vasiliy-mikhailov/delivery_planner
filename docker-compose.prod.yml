@@ -10,8 +10,17 @@ services:
       - 8000:8000
     depends_on:
       - delivery-planner-database
-    env_file:
-      - ./server/.env.prod
+    environment:
+      - DEBUG=0
+      - SECRET_KEY=my-super-secret-prod-key
+      - DJANGO_ALLOWED_HOSTS=*
+      - CORS_ORIGIN_WHITELIST=http://localhost http://127.0.0.1
+      - SQL_ENGINE=django.db.backends.postgresql
+      - SQL_DATABASE=delivery-planner-dev
+      - SQL_USER=delivery-planner
+      - SQL_PASSWORD=delivery-planner
+      - SQL_HOST=delivery-planner-database
+      - SQL_PORT=5432
 
   delivery-planner-database:
     container_name: delivery-planner-database
@@ -27,6 +36,8 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile.prod
+      args:
+        - REACT_APP_DELIVERY_PLANNER_APP_URL=http://localhost:8000/delivery_planner_app
     ports:
       - 80:80
     depends_on:

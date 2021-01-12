@@ -3,6 +3,7 @@ version: 0.2
 env:
   variables:
     AWS_REGION: "eu-central-1"
+    REACT_APP_DELIVERY_PLANNER_APP_URL: "http://dp.scrumai.com/delivery_planner_app
 
 phases:
   install:
@@ -34,6 +35,7 @@ phases:
           --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod \
           -f client/Dockerfile.prod \
           -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod \
+          --build-arg REACT_APP_DELIVERY_PLANNER_APP_URL=$REACT_APP_DELIVERY_PLANNER_APP_URL \
           ./client
   post_build:
     commands:

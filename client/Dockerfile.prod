@@ -19,7 +19,7 @@ RUN npm ci
 
 
 # set build time environment variables
-ARG REACT_APP_DELIVERY_PLANNER_APP_URL=http://dp.scrumai.com/delivery_planner_app
+ARG REACT_APP_DELIVERY_PLANNER_APP_URL
 ARG NODE_ENV=production
 
 # set run time environment variables
