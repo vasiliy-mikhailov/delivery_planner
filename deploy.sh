@@ -21,7 +21,7 @@ register_definition() {
 deploy_cluster() {
 
   # server
-  template="ecs_users_task_definition.json"
+  template="ecs_server_task_definition.json"
   task_template=$(cat "ecs/$template")
   task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $AWS_REGION $AWS_REGION $SECRET_KEY $SQL_HOST $SQL_PASSWORD $AWS_REGION)
   echo "$task_def"
