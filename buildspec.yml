@@ -3,7 +3,6 @@ version: 0.2
 env:
   variables:
     AWS_REGION: "eu-central-1"
-    REACT_APP_DELIVERY_PLANNER_APP_URL: "http://delivery-planner-alb-1899848453.eu-central-1.elb.amazonaws.com/delivery_planner_app"
 
 phases:
   install:
@@ -33,15 +32,6 @@ phases:
           ./server
       - >
         docker build \
-          --target builder \
-          --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:builder \
-          -f client/Dockerfile.prod \
-          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:builder \
-          --build-arg NODE_ENV=production \
-          --build-arg REACT_APP_DELIVERY_PLANNER_APP_URL=REACT_APP_DELIVERY_PLANNER_APP_URL \
-          ./client
-      - >
-        docker build \
           --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod \
           -f client/Dockerfile.prod \
           -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod \
@@ -49,5 +39,4 @@ phases:
   post_build:
     commands:
     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-server:prod
-    - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:builder
     - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/delivery-planner-client:prod
