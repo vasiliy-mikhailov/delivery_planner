@@ -9,8 +9,8 @@ configure_aws_cli() {
   echo "AWS Configured!"
 }
 
-register_definition() {
-  if revision=$(aws ecs register-task-definition --cli-input-json "$task_def" | $JQ '.taskDefinition.taskDefinitionArn'); then
+register_task_definition() {
+  if revision=$(aws ecs register-task-definition --cli-input-json "$task_definition" | $JQ '.taskDefinition.taskDefinitionArn'); then
     echo "Revision: $revision"
   else
     echo "Failed to register task definition"
@@ -18,21 +18,36 @@ register_definition() {
   fi
 }
 
+update_service() {
+  if [[ $(aws ecs update-service --cluster $cluster --service $service --task-definition $revision | $JQ '.service.taskDefinition') != $revision ]]; then
+    echo "Error updating service."
+    return 1
+  fi
+}
+
 deploy_cluster() {
 
+  cluster="delivery-planner-cluster"
+
   # server
-  template="ecs_server_task_definition.json"
-  task_template=$(cat "ecs/$template")
-  task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $AWS_REGION $SECRET_KEY $SQL_HOST $SQL_PASSWORD $AWS_REGION)
-  echo "$task_def"
-  register_definition
+  task_definition_template_file="ecs_server_task_definition.json"
+  task_definition_template=$(cat "ecs/$task_definition_template_file")
+  task_definition=$(printf "$task_definition_template" $AWS_ACCOUNT_ID $AWS_REGION $SECRET_KEY $SQL_HOST $SQL_PASSWORD $AWS_REGION)
+  echo "$task_definition"
+  register_task_definition
+
+  service="delivery-planner-server-service"
+  update_service
 
   # client
-  template="ecs_client_task_definition.json"
-  task_template=$(cat "ecs/$template")
-  task_def=$(printf "$task_template" $AWS_ACCOUNT_ID $AWS_REGION $AWS_REGION)
-  echo "$task_def"
-  register_definition
+  task_definition_template_file="ecs_client_task_definition.json"
+  task_definition_template=$(cat "ecs/$task_definition_template_file")
+  task_definition=$(printf "$task_definition_template" $AWS_ACCOUNT_ID $AWS_REGION $AWS_REGION)
+  echo "$task_definition"
+  register_task_definition
+
+  service="delivery-planner-client-service"
+  update_service 
 
 }
 
