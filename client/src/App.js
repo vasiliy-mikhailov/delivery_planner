@@ -50,7 +50,6 @@ function App() {
     }
 
     const planDelivery = (params: {deliveryPlanFile: File}) => {
-	alert(planDeliveryUrl)
         const deliveryPlanFormData = new FormData()
         deliveryPlanFormData.append('plan_file', params.deliveryPlanFile)
 
@@ -58,22 +57,50 @@ function App() {
             method: 'POST',
             body: deliveryPlanFormData
         })
-            .then((response) => response.blob()
+            .then((response) => {
+                if (response.ok) {
+                    return response.blob()
+                }
+
+                throw response
+            }
         )
             .then((blob) => {
                 makeBrowserDownloadPlan({fileContents: blob})
             })
             .catch(error => {
                 console.error(error)
+
+                error.text().then (
+                    (errorMessage) => {
+                        console.log(errorMessage)
+                        alert(errorMessage)
+                    }
+                )
             })
+    }
+
+    const prepareInputForNextUpload= (params: {input: any}) => {
+        params.input.value = null
     }
 
     return (
         <Sentry.ErrorBoundary fallback={FallbackComponent} showDialog>
             <div className="App">
-                <input type="file" id="externalTasksFileInput" onChange={(e) => uploadExternalTasks({externalTasksFile: e.target.files[0]})}/>
+                {/* <input type="file" id="externalTasksFileInput" onChange={(e) => uploadExternalTasks({externalTasksFile: e.target.files[0]})}/> */}
 
-                <input type="file" id="deliveryPlanFileInput" onChange={(e) => planDelivery({deliveryPlanFile: e.target.files[0]})}/>
+                Загрузите файл
+                <input
+                    style={{marginTop: 100}}
+                    type="file"
+                    id="deliveryPlanFileInput"
+                    onChange={
+                        (e) => {
+                            planDelivery({deliveryPlanFile: e.target.files[0]})
+                            prepareInputForNextUpload({input: e.target})
+                        }
+                    }
+                />
             </div>
         </Sentry.ErrorBoundary>
     );

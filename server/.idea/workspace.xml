@@ -21,11 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="ad0460b8-3aa8-43bc-a1fd-533482333c09" name="Default Changelist" comment="ExternalTasksRepository">
       <change beforePath="$PROJECT_DIR$/../client/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/../client/.eslintcache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/../client/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../client/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../run_delivery_planner_site_tests.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../run_server_tests.sh" beforeDir="false" afterPath="$PROJECT_DIR$/../run_server_tests.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -233,6 +229,7 @@
       <workItem from="1609532535615" duration="13000" />
       <workItem from="1609613262679" duration="4000" />
       <workItem from="1610361488342" duration="286000" />
+      <workItem from="1610523330071" duration="937000" />
     </task>
     <task id="LOCAL-00001" summary="task outputs">
       <created>1606979954249</created>
