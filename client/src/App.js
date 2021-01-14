@@ -92,7 +92,7 @@ function App() {
             <div className="App">
                 {/* <input type="file" id="externalTasksFileInput" onChange={(e) => uploadExternalTasks({externalTasksFile: e.target.files[0]})}/> */}
 
-                Загрузите файл
+                Файл
                 <input
                     style={{marginTop: 100}}
                     type="file"
