@@ -21,6 +21,8 @@
   <component name="ChangeListManager">
     <list default="true" id="ad0460b8-3aa8-43bc-a1fd-533482333c09" name="Default Changelist" comment="ExternalTasksRepository">
       <change beforePath="$PROJECT_DIR$/../client/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/../client/.eslintcache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/../client/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../client/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../client/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/../client/src/App.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -230,6 +232,7 @@
       <workItem from="1609613262679" duration="4000" />
       <workItem from="1610361488342" duration="286000" />
       <workItem from="1610523330071" duration="937000" />
+      <workItem from="1610607917960" duration="2305000" />
     </task>
     <task id="LOCAL-00001" summary="task outputs">
       <created>1606979954249</created>

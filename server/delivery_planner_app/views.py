@@ -4,6 +4,7 @@ from wsgiref.util import FileWrapper
 from django.http import HttpResponse
 
 # Create your views here.
+from rest_framework.exceptions import APIException
 from rest_framework.parsers import FileUploadParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -42,18 +43,22 @@ class PlanDeliveryView(APIView):
     parser_classes = [MultiPartParser]
 
     def post(self, request):
-        plan_file = request.data['plan_file']
-        reader = ExcelPlanReader(file_name_or_io=plan_file)
-        plan_input = reader.read()
-        external_task_repository = DbExternalTaskRepository()
-        planner = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
-        plan_output = planner.interact()
 
-        output = io.BytesIO()
-        presenter = ExcelPlanPresenter(report_file_name_or_io=output, plan_output=plan_output)
-        _ = presenter.present()
-        output.seek(0)
+        try:
+            plan_file = request.data['plan_file']
+            reader = ExcelPlanReader(file_name_or_io=plan_file)
+            plan_input = reader.read()
+            external_task_repository = DbExternalTaskRepository()
+            planner = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
+            plan_output = planner.interact()
 
-        response = HttpResponse(FileWrapper(output))
-        response['Content-Disposition'] = 'attachment; filename="plan_output.xlsx"'
-        return response
+            output = io.BytesIO()
+            presenter = ExcelPlanPresenter(report_file_name_or_io=output, plan_output=plan_output)
+            _ = presenter.present()
+            output.seek(0)
+
+            response = HttpResponse(FileWrapper(output))
+            response['Content-Disposition'] = 'attachment; filename="plan_output.xlsx"'
+            return response
+        except Exception as e:
+            raise APIException(detail=e)

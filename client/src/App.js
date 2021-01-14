@@ -1,6 +1,9 @@
 import './App.css';
 import React from "react";
 import * as Sentry from '@sentry/react';
+import { ToastContainer, toast } from 'react-toastify';
+
+  import 'react-toastify/dist/ReactToastify.css';
 
 function FallbackComponent() {
   return (
@@ -71,10 +74,10 @@ function App() {
             .catch(error => {
                 console.error(error)
 
-                error.text().then (
-                    (errorMessage) => {
-                        console.log(errorMessage)
-                        alert(errorMessage)
+                error.json().then (
+                    (json) => {
+                        console.log(json.detail)
+                        toast.error(json.detail)
                     }
                 )
             })
@@ -101,6 +104,7 @@ function App() {
                         }
                     }
                 />
+                <ToastContainer />
             </div>
         </Sentry.ErrorBoundary>
     );
