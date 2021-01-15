@@ -1,4 +1,3 @@
-import os
 from math import isclose
 from Entities.Plan.Plan import Plan
 from Entities.Resource.Calendar.RussianCalendar import RussianCalendar
@@ -19,7 +18,7 @@ from Outputs.HightlightOutput import HighlightOutput
 from Outputs.PlanOutput import PlanOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanOutput import ResourceCalendarPlanOutput
 from SmallTests.FakeExternalTaskRepository import FakeExternalTaskRepository
-from SmallTests.FakePlannerInteractor import FakePlanner
+from SmallTests.FakePlannerInteractor import FakePlannerInteractor
 from SmallTests.FakePlanReader import FakePlanReader
 from Outputs.ResourceUtilizationOutputs.ResourceUtilizationOutput import ResourceUtilizationOutput
 from Outputs.TaskResourceSupplyOutputs.TaskResourceSupplyOutput import TaskResourceSupplyOutput
@@ -48,7 +47,7 @@ def test_planner_returns_empty_plan_when_there_are_no_tasks_and_no_resources():
 
 
 def test_fake_planner_generates_resource_utilization():
-    fake_planner = FakePlanner()
+    fake_planner = FakePlannerInteractor()
     fake_plan_reader = FakePlanReader()
 
     plan_input = fake_plan_reader.read()
@@ -333,6 +332,13 @@ def test_planner_produces_output():
     task_0 = resource_0.tasks[0]
     assert len(task_0.hours_spent_by_day.values()) > 0
     assert sum(hours_spent for hours_spent in task_0.hours_spent_by_day.values()) == 80
+
+    resource_lacks = plan_output.resource_lacks
+
+    bl_1_sys_2_resource_lacks = [resource_lack for resource_lack in resource_lacks if resource_lack.business_line == 'BL-1' and resource_lack.system == 'SYS-2']
+    assert len(bl_1_sys_2_resource_lacks) == 1
+    bl_1_sys_2_resource_lack = bl_1_sys_2_resource_lacks[0]
+    assert sum([bl_1_sys_2_effort.hours for bl_1_sys_2_effort in bl_1_sys_2_resource_lack.efforts]) == 1211
 
 def test_fake_task_id_input_reader_reads_data():
     fake_task_id_input_reader = FakeTaskIdInputReader()

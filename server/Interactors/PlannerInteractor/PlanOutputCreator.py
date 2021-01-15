@@ -1,6 +1,8 @@
 from Entities.Plan.Plan import Plan
 from Entities.Resource.Calendar.Calendar import generate_date_range
 from Entities.Resource.Resource import Resource
+from Entities.Skill.AbilityEnum import AbilityEnum
+from Entities.Task.Effort.Effort import Effort
 from Entities.Task.Effort.Efforts import Efforts
 from Entities.Task.FinishStartConstrainedTask import FinishStartConstrainedTask
 from Entities.Task.Task import Task
@@ -17,6 +19,7 @@ from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanGroupOutput import 
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanMemberOutput import ResourceCalendarPlanMemberOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanOutput import ResourceCalendarPlanOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanTaskOutput import ResourceCalendarPlanTaskOutput
+from Outputs.ResourceLackOutput import ResourceLackOutput
 from Outputs.ResourceUtilizationOutputs.ResourceUtilizationOutput import ResourceUtilizationOutput
 from Outputs.ResourceUtilizationOutputs.ResourceUtilizationPercentOutput import ResourceUtilizationPercentOutput
 from Outputs.ResourceUtilizationOutputs.ResourceUtilizationResourceOutput import ResourceUtilizationResourceOutput
@@ -424,6 +427,83 @@ class PlanOutputCreator:
         self.fill_predecessors_in_task_outputs_recursive(task_inputs_containing_predecessor_data=task_inputs, tasks_that_will_receive_predecessors=result)
         return result
 
+    def find_resource_lacks_by_business_line_and_system(self, resource_lacks: [ResourceLackOutput], business_line: str, system: str):
+        return [resource_lack for resource_lack in resource_lacks if resource_lack.business_line == business_line and resource_lack.system == system]
+
+    def find_or_create_resource_lack(self, resource_lacks: [ResourceLackOutput], business_line: str, system: str):
+        resource_lacks_to_increment = self.find_resource_lacks_by_business_line_and_system(resource_lacks,
+                                                                                           business_line=business_line,
+                                                                                           system=system)
+
+        if resource_lacks_to_increment:
+            result = resource_lacks_to_increment[0]
+        else:
+            result = ResourceLackOutput(
+                business_line=business_line,
+                system=system
+            )
+
+            resource_lacks.append(result)
+
+        return result
+
+    def find_efforts_to_increment_by_ability(self, efforts: [Effort], ability: AbilityEnum):
+        return [effort for effort in efforts if effort.ability == AbilityEnum]
+
+    def find_or_create_effort(self, efforts: [Effort], ability: AbilityEnum):
+        efforts_to_increment = self.find_efforts_to_increment_by_ability(efforts=efforts, ability=ability)
+
+        if efforts_to_increment:
+            result = efforts_to_increment[0]
+        else:
+            result = EffortOutput(ability=ability, hours=0)
+            efforts.append(result)
+
+        return result
+
+    def add_resource_lack(self, resource_lacks: [ResourceLackOutput], business_line: str, system: str, ability: AbilityEnum, remaining_hours: float):
+        resource_lack_to_increment = self.find_or_create_resource_lack(resource_lacks=resource_lacks, business_line=business_line, system=system)
+
+        efforts = resource_lack_to_increment.efforts
+
+        effort_to_increment = self.find_or_create_effort(efforts=efforts, ability=ability)
+
+        effort_to_increment.hours = effort_to_increment.hours + remaining_hours
+
+    def calculate_resource_lacks_recursive(self, resource_lacks: [ResourceLackOutput], tasks: [Task]):
+        for task in tasks:
+            remaining_efforts = task.get_remaining_efforts_ignoring_sub_tasks()
+            skills = remaining_efforts.get_skills()
+
+            for skill in skills:
+                remaining_hours = remaining_efforts.get_hours_for_skill(skill=skill)
+
+                if remaining_hours:
+                    business_line = task.get_business_line()
+                    system = skill.system
+                    ability = skill.ability
+                    self.add_resource_lack(
+                        resource_lacks=resource_lacks,
+                        business_line=business_line,
+                        system=system,
+                        ability=ability,
+                        remaining_hours=remaining_hours
+                    )
+
+            task_direct_sub_tasks = task.get_direct_sub_tasks()
+            self.calculate_resource_lacks_recursive(resource_lacks=resource_lacks, tasks=task_direct_sub_tasks)
+
+    def calculate_resource_lacks(self):
+        result = []
+
+        tasks = self.plan.tasks
+
+        self.calculate_resource_lacks_recursive(resource_lacks=result, tasks=tasks)
+
+        result.sort(key=lambda resource_lack: (resource_lack.business_line, resource_lack.system))
+
+        return result
+
     def create_output(self):
         result = PlanOutput(start_date=self.plan.start_date, end_date=self.plan.end_date)
         result.task_resource_supply = self.convert_entities_to_task_supply(tasks=self.plan.tasks)
@@ -435,5 +515,6 @@ class PlanOutputCreator:
         )
         task_inputs = self.task_inputs
         result.tasks = self.convert_task_inputs_to_task_outputs(task_inputs=task_inputs)
+        result.resource_lacks = self.calculate_resource_lacks()
 
         return result

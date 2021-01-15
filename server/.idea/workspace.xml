@@ -19,7 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad0460b8-3aa8-43bc-a1fd-533482333c09" name="Default Changelist" comment="" />
+    <list default="true" id="ad0460b8-3aa8-43bc-a1fd-533482333c09" name="Default Changelist" comment="excluded django from pytest coverage" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -266,7 +266,7 @@
       <workItem from="1609613262679" duration="4000" />
       <workItem from="1610361488342" duration="286000" />
       <workItem from="1610523330071" duration="937000" />
-      <workItem from="1610607917960" duration="17082000" />
+      <workItem from="1610607917960" duration="25626000" />
     </task>
     <task id="LOCAL-00001" summary="task outputs">
       <created>1606979954249</created>
@@ -334,7 +334,7 @@
     <SUITE FILE_PATH="coverage/server$pytest_in_test_Repositories_py.coverage" NAME="pytest in test_Repositories.py Coverage Results" MODIFIED="1608551177632" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
     <SUITE FILE_PATH="coverage/server$pytest_in_test_Interactors_py.coverage" NAME="pytest in test_Interactors.py Coverage Results" MODIFIED="1606897533825" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
     <SUITE FILE_PATH="coverage/server$pytest_for_test_Plan_test_plan_simulate_inconcrete_member_worked_on_task_in_multiple_roles_decreases_task_effort_if_has_suitable_skill.coverage" NAME="pytest for test_Plan.test_plan_simulate_inconcrete_member_worked_on_task_in_multiple_roles_decreases_task_effort_if_has_suitable_skill Coverage Results" MODIFIED="1610708322460" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
-    <SUITE FILE_PATH="coverage/server$pytest_in__.coverage" NAME="pytest in / Coverage Results" MODIFIED="1610708799651" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/server$pytest_in__.coverage" NAME="pytest in / Coverage Results" MODIFIED="1610722617836" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/server$Test__SmallTests.coverage" NAME="Test: / Coverage Results" MODIFIED="1608742834412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/server$pytest_in_test_Outputs_py.coverage" NAME="pytest in test_Outputs.py Coverage Results" MODIFIED="1606898240272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
     <SUITE FILE_PATH="coverage/server$pytest_in_SmallTests.coverage" NAME="pytest in SmallTests Coverage Results" MODIFIED="1606886498148" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />

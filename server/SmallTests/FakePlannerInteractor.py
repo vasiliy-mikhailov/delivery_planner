@@ -6,6 +6,7 @@ from Outputs.PlanOutput import PlanOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanBottleneckHintOutput import \
     ResourceCalendarPlanBottleneckHintOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanGroupOutput import ResourceCalendarPlanGroupOutput
+from Outputs.ResourceLackOutput import ResourceLackOutput
 from Outputs.TaskOutput import TaskOutput
 from Outputs.TaskResourceSupplyOutputs.TaskResourceSupplyOutput import TaskResourceSupplyOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanOutput import ResourceCalendarPlanOutput
@@ -22,7 +23,7 @@ from Outputs.ResourceUtilizationOutputs.ResourceUtilizationTaskOutput import Res
 from Outputs.TeamMemberOutput import TeamMemberOutput
 
 
-class FakePlanner:
+class FakePlannerInteractor:
 
     def generate_task_resource_supply_row(self, task_id: str, task_name: str, business_line: str, is_fully_supplied: bool, skill_supply_percent_list: []):
         task_resource_supply_row = TaskResourceSupplyRowOutput(
@@ -337,6 +338,16 @@ class FakePlanner:
 
         return task_1
 
+    def generate_resource_lacks(self):
+        resource_lack_1 = ResourceLackOutput(business_line='BL-1', system='SYS-1')
+        effort_output_1 = EffortOutput(ability=AbilityEnum.DEVELOPMENT, hours=16)
+        effort_output_2 = EffortOutput(ability=AbilityEnum.SYSTEM_TESTING, hours=8)
+        resource_lack_1.efforts = [
+            effort_output_1,
+            effort_output_2
+        ]
+
+        return [resource_lack_1]
 
     def plan(self, plan_input: PlanInput):
         start_date = plan_input.start_date
@@ -349,5 +360,6 @@ class FakePlanner:
         plan_output.external_tasks = [
             self.generate_first_external_task_output()
         ]
+        plan_output.resource_lacks = self.generate_resource_lacks()
 
         return plan_output

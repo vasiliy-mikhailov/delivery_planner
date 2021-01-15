@@ -8,6 +8,7 @@ from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanBottleneckHintOutpu
     ResourceCalendarPlanBottleneckHintOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanGroupOutput import ResourceCalendarPlanGroupOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanMemberOutput import ResourceCalendarPlanMemberOutput
+from Outputs.ResourceLackOutput import ResourceLackOutput
 from Outputs.TaskOutput import TaskOutput
 from Outputs.TaskResourceSupplyOutputs.TaskResourceSupplyRowOutput import TaskResourceSupplyRowOutput
 from Outputs.TaskResourceSupplyOutputs.TaskResourceSupplyOutput import TaskResourceSupplyOutput
@@ -32,6 +33,7 @@ def test_plan_output_holds_attributes():
     assert isinstance(plan_output.task_resource_supply, TaskResourceSupplyOutput)
     assert isinstance(plan_output.resource_calendar_plan, ResourceCalendarPlanOutput)
     assert isinstance(plan_output.resource_utilization, ResourceUtilizationOutput)
+    assert len(plan_output.resource_lacks) == 0
 
 def test_task_resource_supply_output_holds_data():
     task_resource_supply = TaskResourceSupplyOutput()
@@ -213,10 +215,6 @@ def test_effort_output_holds_data():
     assert ability_hours.ability == AbilityEnum.SYSTEM_ANALYSIS
     assert ability_hours.hours == 7
 
-def test_effort_output_raises_value_error_when_supplied_with_nan():
-    with pytest.raises(ValueError):
-        _ = EffortOutput(ability=AbilityEnum.SYSTEM_ANALYSIS, hours=float('nan'))
-
 def test_team_member_output_holds_attributes():
     team_member = TeamMemberOutput(system='SYS-1', ability=AbilityEnum.DEVELOPMENT, resource_ids_and_or_quantities=['1', 'foo@bar.com'])
 
@@ -253,6 +251,12 @@ def test_team_member_output_raises_exception_if_supplied_with_parameters_of_wron
             resource_ids_and_or_quantities=[math.nan]
         )
 
+def test_resource_lack_output_holds_attributes():
+    resource_lack = ResourceLackOutput(business_line='BL-1', system='SYS-1')
+
+    assert resource_lack.business_line == 'BL-1'
+    assert resource_lack.system == 'SYS-1'
+    assert len(resource_lack.efforts) == 0
 
 
 

@@ -122,3 +122,6 @@ class FinishStartConstrainedTask(Task):
 
     def remove_assignments_by_resource_and_date_and_skill(self, resource: Resource, date: date, skill: Skill):
         self.task.remove_assignments_by_resource_and_date_and_skill(resource=resource, date=date, skill=skill)
+
+    def get_remaining_efforts_ignoring_sub_tasks(self):
+        return self.task.get_remaining_efforts_ignoring_sub_tasks()

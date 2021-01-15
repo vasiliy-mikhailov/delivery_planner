@@ -1,5 +1,6 @@
 from datetime import date
 
+from Outputs.ResourceLackOutput import ResourceLackOutput
 from Outputs.TaskOutput import TaskOutput
 from Outputs.TaskResourceSupplyOutputs.TaskResourceSupplyOutput import TaskResourceSupplyOutput
 from Outputs.ResourceCalendarPlanOutputs.ResourceCalendarPlanOutput import ResourceCalendarPlanOutput
@@ -15,4 +16,5 @@ class PlanOutput:
         self.task_resource_supply: TaskResourceSupplyOutput = TaskResourceSupplyOutput()
         self.resource_calendar_plan: ResourceCalendarPlanOutput = ResourceCalendarPlanOutput()
         self.resource_utilization: ResourceUtilizationOutput = ResourceUtilizationOutput()
+        self.resource_lacks: [ResourceLackOutput] = []
 

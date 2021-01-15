@@ -14,7 +14,7 @@ import pytest
 from Presenters.ExcelWrapper.ExcelAbilityFormatter import ExcelAbilityFormatter
 from SmallTests.FakeExternalTaskRepository import FakeExternalTaskRepository
 from SmallTests.FakePlanReader import FakePlanReader
-from SmallTests.FakePlannerInteractor import FakePlanner
+from SmallTests.FakePlannerInteractor import FakePlannerInteractor
 from Entities.Skill.AbilityEnum import AbilityEnum
 
 
@@ -142,7 +142,7 @@ def test_ability_formatter_outputs_ability_name():
     assert formatter.format(AbilityEnum.PROJECT_MANAGEMENT) == 'Управление проектом'
 
 def test_plan_presenter_shows_plan_period():
-    fake_planner = FakePlanner()
+    fake_planner = FakePlannerInteractor()
     fake_plan_reader = FakePlanReader()
 
     plan_input = fake_plan_reader.read()
@@ -163,7 +163,7 @@ def test_plan_presenter_shows_plan_period():
     assert plan_period_page.read_cell(row=1, col=1).number_format == 'dd.mm.yyyy'
 
 def test_plan_presenter_shows_tasks():
-    fake_planner = FakePlanner()
+    fake_planner = FakePlannerInteractor()
     fake_plan_reader = FakePlanReader()
 
     plan_input = fake_plan_reader.read()
@@ -218,7 +218,7 @@ def test_plan_presenter_shows_tasks():
     assert tasks_page.read_cell(row=8, col=8).value == 1
 
 def test_plan_presenter_shows_task_resource_supply():
-    fake_planner = FakePlanner()
+    fake_planner = FakePlannerInteractor()
     fake_plan_reader = FakePlanReader()
 
     plan_input = fake_plan_reader.read()
@@ -285,7 +285,7 @@ def test_task_resource_supply_presenter_shows_excel_for_fake_data():
     presenter.present()
 
 def test_plan_presenter_shows_resource_calendar_plan():
-    fake_planner = FakePlanner()
+    fake_planner = FakePlannerInteractor()
     fake_plan_reader = FakePlanReader()
 
     plan_input = fake_plan_reader.read()
@@ -395,7 +395,7 @@ def test_plan_presenter_shows_resource_calendar_plan():
     assert resource_calendar_plan_page.get_frozen_row_and_column() == (1, 12)
 
 def test_plan_presenter_shows_resource_utilization_plan():
-    fake_planner = FakePlanner()
+    fake_planner = FakePlannerInteractor()
     fake_plan_reader = FakePlanReader()
 
     plan_input = fake_plan_reader.read()
@@ -431,6 +431,37 @@ def test_plan_presenter_shows_resource_utilization_plan():
     assert resource_utilization_page.get_collapse_level_for_row(row=2) == 1
 
     assert resource_utilization_page.get_frozen_row_and_column() == (1, 5)
+
+def test_plan_presenter_shows_resource_lack():
+    fake_planner = FakePlannerInteractor()
+    fake_plan_reader = FakePlanReader()
+
+    plan_input = fake_plan_reader.read()
+    plan_output = fake_planner.plan(plan_input)
+
+    report_file_name = './SmallTests/output_excels/test_plan_presenter_shows_resource_lack.xlsx'
+    presenter = ExcelPlanPresenter(report_file_name_or_io=report_file_name, plan_output=plan_output)
+
+    report = presenter.present()
+
+    assert os.path.exists(report_file_name)
+    task_resource_supply_page = report.get_page_by_name('out_Недостаток ресурсов')
+    assert task_resource_supply_page.read_cell(row=0, col=0).value == 'Бизнес-линия'
+    assert task_resource_supply_page.read_cell(row=0, col=1).value == 'Система'
+    assert task_resource_supply_page.read_cell(row=0, col=2).value == 'Архитектор решения (не хватает часов)'
+    assert task_resource_supply_page.read_cell(row=0, col=3).value == 'Системный аналитик (не хватает часов)'
+    assert task_resource_supply_page.read_cell(row=0, col=4).value == 'Разработчик (не хватает часов)'
+    assert task_resource_supply_page.read_cell(row=0, col=5).value == 'Системный тестировщик (не хватает часов)'
+    assert task_resource_supply_page.read_cell(row=0, col=6).value == 'Интеграционный тестировщик (не хватает часов)'
+    assert task_resource_supply_page.read_cell(row=0, col=7).value == 'Владелец продукта (не хватает часов)'
+    assert task_resource_supply_page.read_cell(row=0, col=8).value == 'Руководитель проекта (не хватает часов)'
+
+    assert task_resource_supply_page.read_cell(row=1, col=0).value == 'BL-1'
+    assert task_resource_supply_page.read_cell(row=1, col=1).value == 'SYS-1'
+    assert task_resource_supply_page.read_cell(row=1, col=4).value == 16
+    assert task_resource_supply_page.read_cell(row=1, col=4).number_format == '# ##0.0'
+    assert task_resource_supply_page.read_cell(row=1, col=5).value == 8
+    assert task_resource_supply_page.read_cell(row=1, col=5).number_format == '# ##0.0'
 
 def test_presenter_from_real_planner_interactor_produces_output():
     fake_plan_reader = FakePlanReader()

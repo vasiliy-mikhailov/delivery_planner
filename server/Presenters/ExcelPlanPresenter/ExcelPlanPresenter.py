@@ -1,6 +1,7 @@
 from Outputs.PlanOutput import PlanOutput
 from Presenters.ExcelPlanPresenter.ExcelInputTaskTreePresenter import ExcelInputTaskTreePresenter
 from Presenters.ExcelPlanPresenter.ExcelPlanPeriodPresenter import ExcelPlanPeriodPresenter
+from Presenters.ExcelPlanPresenter.ExcelResourceLackPresenter import ExcelResourceLackPresenter
 from Presenters.ExcelPlanPresenter.ExcelTaskResourceSupplyPresenter import \
     ExcelTaskResourceSupplyPresenter
 from Presenters.ExcelPlanPresenter.ExcelResourceCalendarPlanPresenter import ExcelResourceCalendarPlanPresenter
@@ -50,6 +51,12 @@ class ExcelPlanPresenter:
             report=report
         )
         task_resource_supply_presenter.present()
+
+        resource_lack_presenter = ExcelResourceLackPresenter(
+            plan_output=self.plan_output,
+            report=report
+        )
+        resource_lack_presenter.present()
 
         report.write_to_disk_and_close()
 
