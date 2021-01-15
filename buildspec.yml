@@ -16,7 +16,7 @@ phases:
     commands:
       - echo building and testing dev images
       - docker-compose up -d --build
-      - docker-compose exec -T delivery-planner-server python -m pytest -n 8 -p no:warnings --cov=. --ignore=delivery_planner_app
+      - docker-compose exec -T delivery-planner-server python -m pytest -n 8 -p no:warnings --cov-config=.coveragerc --cov=. --ignore=delivery_planner_app --ignore=delivery_planner_site
       - docker-compose exec -T delivery-planner-server python manage.py test
       - echo building prod images...
       - >
