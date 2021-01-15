@@ -297,7 +297,7 @@ def test_plan_presenter_shows_resource_calendar_plan():
     report = presenter.present()
 
     assert os.path.exists(report_file_name)
-    resource_calendar_plan_page = report.get_page_by_name('out_Ресурсно-календарный план')
+    resource_calendar_plan_page = report.get_page_by_name('out_Производственный план')
     assert resource_calendar_plan_page.read_cell(row=0, col=0).value == 'id'
     assert resource_calendar_plan_page.read_cell(row=0, col=1).value == 'Бизнес-линия'
     assert resource_calendar_plan_page.read_cell(row=0, col=2).value == 'Задача'

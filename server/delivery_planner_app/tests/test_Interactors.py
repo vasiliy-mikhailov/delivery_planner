@@ -71,7 +71,7 @@ class InteractorsTestCase(TestCase):
 
         excel_plan_output = response.content
 
-        pd.read_excel(excel_plan_output, sheet_name='out_Ресурсно-календарный план')
+        pd.read_excel(excel_plan_output, sheet_name='out_Производственный план')
 
 
 

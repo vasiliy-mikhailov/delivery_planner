@@ -175,7 +175,7 @@ class ExcelResourceCalendarPlanPresenter:
 
 
     def present(self):
-        page = self.report.add_page_named('out_Ресурсно-календарный план')
+        page = self.report.add_page_named('out_Производственный план')
 
         self.present_resource_calendar_plan_header(page=page)
         self.present_resource_calendar_plan_data(tasks=self.plan_output.resource_calendar_plan.tasks, page=page)

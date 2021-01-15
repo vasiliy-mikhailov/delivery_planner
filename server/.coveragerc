@@ -1,0 +1,8 @@
+[run]
+omit=
+  ./manage.py
+  ./delivery_planner_app/*
+  ./delivery_planner_site/*
+  ./Implementation1Tests/*
+  ./SmallTests/*
+  ./venv/*  
