@@ -74,3 +74,6 @@ class Task:
 
     def remove_assignments_by_resource_and_date_and_skill(self, resource: Resource, date: date, skill: Skill):
         raise NotImplementedError
+
+    def set_preferred_start_and_end_date_if_initial_effort_is_zero(self, preferred_start_and_end_date: date):
+        raise NotImplementedError

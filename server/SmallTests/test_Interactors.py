@@ -200,6 +200,7 @@ def test_planner_simulates_execution():
 def test_planner_produces_output():
     fake_plan_reader = FakePlanReader()
     plan_input = fake_plan_reader.read()
+
     external_task_repository = FakeExternalTaskRepository()
     sut = PlannerInteractor(plan_input=plan_input, external_task_repository=external_task_repository)
     plan_output: PlanOutput = sut.interact()

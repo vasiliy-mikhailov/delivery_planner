@@ -10,6 +10,7 @@ class FinishStartConstrainedTask(Task):
     def __init__(self, task: Task):
         self.task: Task = task
         self.predecessors: [Task] = []
+        self.start_and_end_date_if_initial_effort_is_zero: date = None
 
     def get_assignment_entries_for_resource(self, resource: Resource):
         return self.task.get_assignment_entries_for_resource(resource=resource)
@@ -64,16 +65,48 @@ class FinishStartConstrainedTask(Task):
         return self.task.get_remaining_efforts_hours_for_skill(skill=skill)
 
     def has_start_date(self):
-        return self.task.has_start_date()
+        initial_effort_hours = self.get_initial_efforts_hours()
+
+        if initial_effort_hours == 0:
+            return self.are_all_predecessors_have_end_date()
+        else:
+            return self.task.has_start_date()
 
     def get_start_date(self):
-        return self.task.get_start_date()
+        initial_effort_hours = self.get_initial_efforts_hours()
+
+        if initial_effort_hours == 0:
+            return self.get_predecessors_max_end_date()
+        else:
+            return self.task.get_start_date()
 
     def has_end_date(self):
-        return self.task.has_end_date()
+        initial_effort_hours = self.get_initial_efforts_hours()
+
+        if initial_effort_hours == 0:
+            return self.are_all_predecessors_have_end_date()
+        else:
+            return self.task.has_end_date()
 
     def get_end_date(self):
-        return self.task.get_end_date()
+        initial_effort_hours = self.get_initial_efforts_hours()
+
+        if initial_effort_hours == 0:
+            return self.get_predecessors_max_end_date()
+        else:
+            return self.task.get_end_date()
+
+    def intentionally_do_nothing(self):
+        pass
+
+    def set_preferred_start_and_end_date_if_initial_effort_is_zero(self, preferred_start_and_end_date: date):
+        initial_effort_hours = self.get_initial_efforts_hours()
+
+        if initial_effort_hours == 0:
+            self.intentionally_do_nothing()
+        else:
+            raise ValueError('FinishStartConstrainedTask set_preferred_start_and_end_date_if_initial_effort_is_zero initial start_and_end_date can be set only if initial effort is zero.')
+
 
     def get_initial_efforts_hours(self) -> float:
         return self.task.get_initial_efforts_hours()

@@ -14,7 +14,7 @@ from Entities.Task.Effort.Effort import Effort
 from Entities.Task.Effort.Efforts import Efforts
 from Entities.Task.SimpleTask import SimpleTask
 from Entities.Team.ConcreteResourceMember import ConcreteResourceMember
-from Entities.Team.Group import Group
+from Entities.Team.GroupOfMembersHavingSameSkill import GroupOfMembersHavingSameSkill
 from Entities.Team.InconcreteResourceMember import InconcreteResourceMember
 from Entities.Team.Team import Team
 
@@ -27,7 +27,7 @@ def test_team_holds_attributes():
     assert len(team.resource_pool) == 0
 
 def test_group_holds_attributes():
-    group = Group(skill=Skill(system='Foo', ability=AbilityEnum.DEVELOPMENT))
+    group = GroupOfMembersHavingSameSkill(skill=Skill(system='Foo', ability=AbilityEnum.DEVELOPMENT))
 
     assert group.skill == Skill(system='Foo', ability=AbilityEnum.DEVELOPMENT)
     assert len(group.members) == 0

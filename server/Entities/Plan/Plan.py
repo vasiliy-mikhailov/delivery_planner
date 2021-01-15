@@ -1,7 +1,7 @@
 import datetime
 from Entities.Assignment.AssignmentEntry import AssignmentEntry, quantize_resource_spent_hours
 from Entities.Resource.Calendar.Calendar import generate_date_range
-from Entities.Skill.Skill import Skill
+from Entities.Resource.Resource import Resource
 from Entities.Task.Task import Task
 from Entities.Team.Member import Member
 from Entities.Team.Team import Team
@@ -209,34 +209,53 @@ class Plan:
         self.mark_bottleneck_group_for_task_if_effort_left(task=task)
         self.mark_bottleneck_groups_for_task_if_has_latest_assignment(task=task)
 
+    def plan_task_that_does_not_have_initial_effort(self, task: Task, start_and_end_date: datetime.date):
+        task.set_preferred_start_and_end_date_if_initial_effort_is_zero(preferred_start_and_end_date=start_and_end_date)
+
+    def plan_task_that_has_initial_effort(self, task: Task, start_date: datetime.date, end_date: datetime.date):
+        team = task.get_team()
+        team.pick_resources_for_task(task=task, start_date=start_date, end_date=end_date)
+
+        self.plan_leveled_recursive(
+            tasks=task.get_direct_sub_tasks(),
+            start_date=start_date,
+            end_date=end_date
+        )
+
+        for date in generate_date_range(start_date, end_date):
+            task_members = team.get_members()
+            for member in task_members:
+                if member.has_picked_resource():
+                    resource = member.get_picked_resource()
+                    resource_remaining_work_hours_for_date = resource.get_remaining_work_hours_for_date(date=date)
+                    resource_has_time_to_work_on_task = resource_remaining_work_hours_for_date >= AssignmentEntry.MINIMAL_SPENDABLE_RESOURCE_HOURS
+                    if resource_has_time_to_work_on_task:
+                        self.simulate_member_worked_on_task_for_day_ignoring_sub_tasks(
+                            member=member,
+                            task=task,
+                            date=date
+                        )
+
+        self.mark_bottleneck_groups_for_task(task=task)
+
+        self.level_resources_effort_on_task_if_possible(task=task)
+
     def plan_leveled_recursive(self, tasks: [Task], start_date: datetime.date, end_date: datetime.date):
         for task in tasks:
-            team = task.get_team()
-            team.pick_resources_for_task(task=task, start_date=start_date, end_date=end_date)
+            initial_effort_hours = task.get_initial_efforts_hours()
+            task_does_not_have_initial_effort =initial_effort_hours == 0
 
-            self.plan_leveled_recursive(
-                tasks=task.get_direct_sub_tasks(),
-                start_date=start_date,
-                end_date=end_date
-            )
-
-            for date in generate_date_range(start_date, end_date):
-                task_members = team.get_members()
-                for member in task_members:
-                    if member.has_picked_resource():
-                        resource = member.get_picked_resource()
-                        resource_remaining_work_hours_for_date = resource.get_remaining_work_hours_for_date(date=date)
-                        resource_has_time_to_work_on_task = resource_remaining_work_hours_for_date >= AssignmentEntry.MINIMAL_SPENDABLE_RESOURCE_HOURS
-                        if resource_has_time_to_work_on_task:
-                            self.simulate_member_worked_on_task_for_day_ignoring_sub_tasks(
-                                member=member,
-                                task=task,
-                                date=date
-                            )
-
-            self.mark_bottleneck_groups_for_task(task=task)
-
-            self.level_resources_effort_on_task_if_possible(task=task)
+            if task_does_not_have_initial_effort:
+                self.plan_task_that_does_not_have_initial_effort(
+                    task=task,
+                    start_and_end_date=start_date
+                )
+            else:
+                self.plan_task_that_has_initial_effort(
+                    task=task,
+                    start_date=start_date,
+                    end_date=end_date
+                )
 
     def plan_leveled(self):
         self.plan_leveled_recursive(

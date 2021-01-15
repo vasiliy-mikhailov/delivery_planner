@@ -96,9 +96,11 @@ class PlanOutputCreator:
 
                 task_assignments = task.get_assignments()
 
-                task_resource_assignment_entries = task_assignments.get_assignment_entries_for_task_and_resource(
+                skill = member.get_skill()
+                task_resource_assignment_entries = task_assignments.get_assignment_entries_for_task_and_skill(
                     task=task,
-                    resource=resource
+                    resource=resource,
+                    skill=skill
                 )
 
                 resource_dates = [assignment_entry.date for assignment_entry in task_resource_assignment_entries if assignment_entry.task_effort_decrease_hours > 0]

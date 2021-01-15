@@ -22,6 +22,7 @@ class SimpleTask(Task):
         self.remaining_efforts: Efforts = efforts
         self.team: Team = team
         self.assignments: Assignments = Assignments()
+        self.start_and_end_date_if_initial_effort_is_zero = None
 
     def get_id(self):
         return self.id
@@ -130,16 +131,22 @@ class SimpleTask(Task):
         return self.assignments.get_assignment_entries_for_task_and_resource(task=self, resource=resource)
 
     def has_start_date(self):
+        if self.start_and_end_date_if_initial_effort_is_zero:
+            return True
+
         must_have_its_own_start_date = self.get_initial_efforts_hours_ignoring_sub_tasks() > 0
 
         if must_have_its_own_start_date:
             return self.assignments.has_start_date() and all([sub_task.has_start_date() for sub_task in self.sub_tasks])
         else:
-            has_start_date_for_subtasks = [sub_task.has_end_date() for sub_task in self.sub_tasks]
+            has_start_date_for_subtasks = [sub_task.has_start_date() for sub_task in self.sub_tasks]
             have_at_least_one_subtask = len(has_start_date_for_subtasks) > 0
             return have_at_least_one_subtask and all(has_start_date_for_subtasks)
 
     def get_start_date(self):
+        if self.start_and_end_date_if_initial_effort_is_zero:
+            return self.start_and_end_date_if_initial_effort_is_zero
+
         if self.has_start_date():
             task_start_date_list = [self.assignments.get_start_date()] if self.assignments.has_start_date() else []
             sub_tasks_start_date_list = [sub_task.get_start_date() for sub_task in self.sub_tasks if sub_task.has_start_date()]
@@ -151,6 +158,9 @@ class SimpleTask(Task):
             raise ValueError
 
     def has_end_date(self):
+        if self.start_and_end_date_if_initial_effort_is_zero:
+            return True
+
         must_have_its_own_end_date = self.get_initial_efforts_hours_ignoring_sub_tasks() > 0
 
         if must_have_its_own_end_date:
@@ -164,6 +174,9 @@ class SimpleTask(Task):
             return have_at_least_one_subtask and all(has_end_date_for_subtasks)
 
     def get_end_date(self):
+        if self.start_and_end_date_if_initial_effort_is_zero:
+            return self.start_and_end_date_if_initial_effort_is_zero
+
         if self.has_end_date():
             task_end_date_list = [self.assignments.get_end_date()] if self.assignments.has_end_date() else []
             sub_tasks_end_date_list = [sub_task.get_end_date() for sub_task in self.sub_tasks if sub_task.has_end_date()]
@@ -174,3 +187,8 @@ class SimpleTask(Task):
         else:
             raise ValueError
 
+    def set_preferred_start_and_end_date_if_initial_effort_is_zero(self, preferred_start_and_end_date: date):
+        if self.get_initial_efforts_hours() == 0:
+            self.start_and_end_date_if_initial_effort_is_zero = preferred_start_and_end_date
+        else:
+            raise ValueError('SimpleTask set_preferred_start_and_end_date_if_initial_effort_is_zero initial start_and_end_date can be set only if initial effort is zero.')

@@ -13,6 +13,7 @@ from Entities.Task.Effort.Effort import Effort
 from Entities.Task.Effort.Efforts import Efforts
 from Entities.Task.SimpleTask import SimpleTask
 from Entities.Team.ConcreteResourceMember import ConcreteResourceMember
+from Entities.Team.InconcreteResourceMember import InconcreteResourceMember
 from Entities.Team.Team import Team
 
 
@@ -232,7 +233,76 @@ def test_plan_simulate_member_worked_on_task_decreases_task_effort_if_has_suitab
     assert task.get_remaining_efforts_hours() == 30
 
 
-def test_plan_simulate_member_worked_on_task_decreases_remaining_work_hours_if_has_suitable_ability_and_sets_start_and_end_date():
+def test_plan_simulate_inconcrete_member_worked_on_task_in_multiple_roles_decreases_task_effort_if_has_suitable_skill():
+    work_date_start = date(2020, 10, 3)
+    work_date_end = date(2020, 10, 7)
+
+    capacities = Capacities(work_hours_per_day=7.0, calendar=RussianCalendar(),
+                            efficiency_in_time=ConstantEfficiency())
+
+    capacities.capacity_list = [
+        CapacityEntry(skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_ANALYSIS), efficiency=1.0),
+        CapacityEntry(skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_TESTING), efficiency=1.0)
+    ]
+
+    resource = SimpleResource(id='foo@bar.com', name='Foo', work_date_start=work_date_start,
+                            work_date_end=work_date_end,
+                            business_line='BL-1',
+                            capacities=capacities)
+
+    assert resource.get_remaining_work_hours() == 21
+
+    assert resource.get_remaining_work_hours_for_date(date=date(2020, 10, 3)) == 0
+    assert resource.get_remaining_work_hours_for_date(date=date(2020, 10, 4)) == 0
+    assert resource.get_remaining_work_hours_for_date(date=date(2020, 10, 5)) == 7
+    assert resource.get_remaining_work_hours_for_date(date=date(2020, 10, 6)) == 7
+    assert resource.get_remaining_work_hours_for_date(date=date(2020, 10, 7)) == 7
+
+    team = Team(business_line='BL-1')
+    member_with_skill_1 = InconcreteResourceMember(
+        business_line='BL-1',
+        skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_ANALYSIS)
+    )
+    team.add_member(member=member_with_skill_1)
+
+    member_with_skill_2 = InconcreteResourceMember(
+        business_line='BL-1',
+        skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_TESTING),
+    )
+    team.add_member(member=member_with_skill_2)
+    team.resource_pool = [resource]
+
+    efforts = Efforts(
+        effort_entries=[
+            Effort(skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_ANALYSIS), hours=10.0),
+            Effort(skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_TESTING), hours=10.0)
+        ])
+    task = SimpleTask(id='T-1', name='Task-1', business_line='BL-1', efforts=efforts, team=team)
+
+    plan = Plan(start_date=work_date_start, end_date=work_date_end)
+    plan.tasks = [task]
+    plan.resources = [resource]
+    plan.teams = [team]
+
+    plan.plan_leveled()
+
+    assert task.get_remaining_efforts_hours() == 0
+
+    assert resource.get_remaining_work_hours() == 1
+
+    assert resource.get_remaining_work_hours_for_date(date=date(2020, 10, 5)) == 0
+    assert resource.get_remaining_work_hours_for_date(date=date(2020, 10, 6)) == 0
+    assert resource.get_remaining_work_hours_for_date(date=date(2020, 10, 7)) == 1
+
+    assert resource.get_hours_spent_for_task_and_date_and_skill(task=task, date=date(2020, 10, 5), skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_ANALYSIS)) == 6
+    assert resource.get_hours_spent_for_task_and_date_and_skill(task=task, date=date(2020, 10, 6), skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_ANALYSIS)) == 3
+    assert resource.get_hours_spent_for_task_and_date_and_skill(task=task, date=date(2020, 10, 7), skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_ANALYSIS)) == 1
+
+    assert resource.get_hours_spent_for_task_and_date_and_skill(task=task, date=date(2020, 10, 5), skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_TESTING)) == 1
+    assert resource.get_hours_spent_for_task_and_date_and_skill(task=task, date=date(2020, 10, 6), skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_TESTING)) == 4
+    assert resource.get_hours_spent_for_task_and_date_and_skill(task=task, date=date(2020, 10, 7), skill=Skill(system='Foo', ability=AbilityEnum.SYSTEM_TESTING)) == 5
+
+def test_plan_simulate_member_worked_on_task_decreases_remaining_work_hours_if_has_suitable_skill_and_sets_start_and_end_date():
     work_date_start = date(2020, 10, 3)
     work_date_end = date(2020, 10, 16)
 
@@ -313,7 +383,7 @@ def test_plan_simulate_member_worked_on_task_does_not_decrease_task_effort_if_di
     assert resource.get_remaining_work_hours() == 80
 
 
-def test_plan_simulate_member_worked_on_task_does_not_decrease_task_effort_if_does_not_have_suitable_ability():
+def test_plan_simulate_member_worked_on_task_does_not_decrease_task_effort_if_does_not_have_suitable_skill():
     work_date_start = date(2020, 10, 3)
     work_date_end = date(2020, 10, 3 + 14)
 
@@ -543,9 +613,5 @@ def test_plan_levels_resource_3_5_hours_in_3_days_to_1_75_hours_for_6_days():
                 assignment_entry.date == date(2020, 10, 13)]) == 0
 
 
-def test_plan_simulate_work_on_plans_less_than_minimum_quant():
-    pass
 
-def test_plan_uses_skill_specified_by_group_if_person_has_multiple_skills():
-    pass
 

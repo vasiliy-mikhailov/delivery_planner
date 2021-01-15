@@ -25,8 +25,11 @@ class ConcreteResourceMember(Member):
     def set_skill(self, skill: Skill):
         self.skill = skill
 
-    def pick_resource_for_task(self, task: Task, start_date: datetime.date, end_date: datetime.date, resource_pool: [Resource]):
+    def intentionally_do_nothing(self):
         pass
+
+    def pick_resource_for_task(self, task: Task, start_date: datetime.date, end_date: datetime.date, resource_pool: [Resource]):
+        self.intentionally_do_nothing()
 
     def has_picked_resource(self):
         return True

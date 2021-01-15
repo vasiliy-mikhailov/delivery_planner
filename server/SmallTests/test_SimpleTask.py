@@ -252,3 +252,26 @@ def test_task_will_not_have_start_date_or_end_date_if_child_task_does_not_have_s
     assert not sub_task_2.has_end_date()
     assert not task.has_start_date()
     assert not task.has_end_date()
+
+def test_simple_task_with_zero_effort_allows_setting_start_and_end_date_and_returns_it():
+    task_team = Team(business_line='BL-1')
+
+    task_with_no_effort = SimpleTask(id='T-1', name='Task-1', business_line='BL-1', efforts=Efforts(effort_entries=[]), team=task_team)
+
+    task_with_no_effort.set_preferred_start_and_end_date_if_initial_effort_is_zero(preferred_start_and_end_date=date(2020, 10, 3))
+
+    assert task_with_no_effort.has_start_date()
+    assert task_with_no_effort.get_start_date() == date(2020, 10, 3)
+
+    assert task_with_no_effort.has_end_date()
+    assert task_with_no_effort.get_end_date() == date(2020, 10, 3)
+
+def test_simple_task_does_now_allow_to_set_start_and_end_date_if_initial_effort_is_not_zero():
+    task_team = Team(business_line='BL-1')
+
+    efforts = Efforts(
+        effort_entries=[Effort(skill=Skill(system='', ability=AbilityEnum.SOLUTION_ARCHITECTURE), hours=10.0)])
+    task_with_effort = SimpleTask(id='T-1', name='Task-1', business_line='BL-1', efforts=efforts, team=task_team)
+
+    with pytest.raises(ValueError):
+        task_with_effort.set_preferred_start_and_end_date_if_initial_effort_is_zero(preferred_start_and_end_date=date(2020, 10, 3))

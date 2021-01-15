@@ -147,5 +147,83 @@ def test_finish_start_constrained_task_is_assignable_if_all_predecessors_get_end
     planner.simulate_member_worked_on_task_for_day(member=member, task=follower_task, date=datetime.date(2020, 10, 8))
     assert follower_task.get_remaining_efforts_hours() == 0
 
-def test_finish_start_constrained_task_raises_value_error_when_accept_task_before_start_of_predecessors():
-    pass
+def test_finish_start_constrained_task_with_zero_effort_returns_it_s_predecessors_end_date():
+    work_date_start = datetime.date(2020, 10, 3)
+    work_date_end = datetime.date(2020, 10, 16)
+
+    predecessor_1_team = Team(business_line='BL-1')
+    predecessor_1 = SimpleTask(
+        id='P-1',
+        name='Predecessor Task-1',
+        business_line='BL-1',
+        efforts=Efforts(effort_entries=[Effort(
+            skill=Skill(system='Foo', ability=AbilityEnum.DEVELOPMENT),
+            hours=7.0)]
+        ),
+        team=predecessor_1_team
+    )
+
+    predecessor_2_team = Team(business_line='BL-1')
+    predecessor_2 = SimpleTask(
+        id='P-2',
+        name='Predecessor Task-2',
+        business_line='BL-1',
+        efforts=Efforts(effort_entries=[Effort(
+            skill=Skill(system='Foo', ability=AbilityEnum.DEVELOPMENT),
+            hours=7.0)]
+        ),
+        team=predecessor_2_team
+    )
+
+    plain_task_team = Team(business_line='BL-1')
+    plain_task_with_zero_effort = SimpleTask(
+        id='T-1',
+        name='Task-1',
+        business_line='BL-1',
+        efforts=Efforts(
+            effort_entries=[]
+        ),
+        team=plain_task_team
+    )
+
+    follower_task_with_zero_effort = FinishStartConstrainedTask(task=plain_task_with_zero_effort)
+    follower_task_with_zero_effort.predecessors = [predecessor_1, predecessor_2]
+
+    capacities = Capacities(
+        work_hours_per_day=1000.0,
+        calendar=RussianCalendar(),
+        efficiency_in_time=ConstantEfficiency()
+    )
+
+    capacity_entry = CapacityEntry(skill=Skill(system='Foo', ability=AbilityEnum.DEVELOPMENT), efficiency=1.0)
+    capacities.capacity_list = [capacity_entry]
+
+    resource = SimpleResource(
+        id='foo@bar.com',
+        name='Foo',
+        work_date_start=work_date_start,
+        work_date_end=work_date_end,
+        business_line='BL-1',
+        capacities=capacities
+    )
+
+    member = ConcreteResourceMember(
+        skill=Skill(system='Foo', ability=AbilityEnum.DEVELOPMENT),
+        concrete_resource=resource
+    )
+
+    planner = Plan(start_date=work_date_start, end_date=work_date_end)
+
+    planner.simulate_member_worked_on_task_for_day(member=member, task=predecessor_1, date=datetime.date(2020, 10, 7))
+    assert predecessor_1.has_end_date()
+    assert predecessor_1.get_end_date() == datetime.date(2020, 10, 7)
+
+    planner.simulate_member_worked_on_task_for_day(member=member, task=predecessor_2, date=datetime.date(2020, 10, 6))
+    assert predecessor_2.has_end_date()
+    assert predecessor_2.get_end_date() == datetime.date(2020, 10, 6)
+
+    assert follower_task_with_zero_effort.has_start_date()
+    assert follower_task_with_zero_effort.get_start_date() == datetime.date(2020, 10, 7)
+
+    assert follower_task_with_zero_effort.has_end_date()
+    assert follower_task_with_zero_effort.get_end_date() == datetime.date(2020, 10, 7)
