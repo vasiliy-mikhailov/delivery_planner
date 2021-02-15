@@ -19,10 +19,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad0460b8-3aa8-43bc-a1fd-533482333c09" name="Default Changelist" comment="excluded django from pytest coverage">
-      <change beforePath="$PROJECT_DIR$/../client/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/../client/.eslintcache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../client/Dockerfile.i1" beforeDir="false" afterPath="$PROJECT_DIR$/../client/Dockerfile.i1" afterDir="false" />
-    </list>
+    <list default="true" id="ad0460b8-3aa8-43bc-a1fd-533482333c09" name="Default Changelist" comment="excluded django from pytest coverage" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -80,7 +77,7 @@
       <recent name="$PROJECT_DIR$/Repository/ExternalTaskReader" />
     </key>
   </component>
-  <component name="RunManager" selected="Python tests.pytest in /">
+  <component name="RunManager" selected="Django tests.Test: Django">
     <configuration name="Test: Django" type="DjangoTestsConfigurationType" temporary="true">
       <module name="server" />
       <option name="INTERPRETER_OPTIONS" value="" />
