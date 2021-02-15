@@ -5,7 +5,7 @@ services:
   delivery-planner-server:
     build:
       context: ./server
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.i1
     container_name: delivery-planner-server
     depends_on:
       - delivery-planner-database
@@ -40,7 +40,7 @@ services:
   delivery-planner-client:
     build:
       context: ./client
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.i1
     command: npm start
     container_name: delivery-planner-client
     depends_on:

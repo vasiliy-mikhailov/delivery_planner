@@ -31,6 +31,14 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
   <component name="InvalidFacetManager">
     <ignored-facets>
       <facet id="server/invalid/Django" />
@@ -226,9 +234,9 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Django tests.Test: Django" />
         <item itemvalue="Python tests.pytest for test_Plan.test_plan_simulate_inconcrete_member_worked_on_task_in_multiple_roles_decreases_task_effort_if_has_suitable_skill" />
         <item itemvalue="Python tests.pytest for test_Plan.test_plan_simulate_member_worked_on_task_in_multiple_roles_decreases_task_effort_if_has_suitable_skill" />
-        <item itemvalue="Django tests.Test: Django" />
         <item itemvalue="Python tests.pytest in test_Repositories.py" />
         <item itemvalue="Python tests.pytest in test_Outputs.py" />
       </list>
@@ -267,6 +275,16 @@
       <workItem from="1610361488342" duration="286000" />
       <workItem from="1610523330071" duration="937000" />
       <workItem from="1610607917960" duration="25626000" />
+      <workItem from="1610974093420" duration="773000" />
+      <workItem from="1610975165118" duration="6255000" />
+      <workItem from="1611688992970" duration="791000" />
+      <workItem from="1611821917273" duration="16000" />
+      <workItem from="1611821954385" duration="1318000" />
+      <workItem from="1612264707476" duration="1627000" />
+      <workItem from="1612338630596" duration="4641000" />
+      <workItem from="1612367209019" duration="28000" />
+      <workItem from="1612417200147" duration="3083000" />
+      <workItem from="1613368770422" duration="479000" />
     </task>
     <task id="LOCAL-00001" summary="task outputs">
       <created>1606979954249</created>
@@ -330,11 +348,11 @@
     <option name="LAST_COMMIT_MESSAGE" value="excluded django from pytest coverage" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/server$Test__Django.coverage" NAME="Test: Django Coverage Results" MODIFIED="1609304414213" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/server$Test__Django.coverage" NAME="Test: Django Coverage Results" MODIFIED="1613369221514" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/server$pytest_in_test_Repositories_py.coverage" NAME="pytest in test_Repositories.py Coverage Results" MODIFIED="1608551177632" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
     <SUITE FILE_PATH="coverage/server$pytest_in_test_Interactors_py.coverage" NAME="pytest in test_Interactors.py Coverage Results" MODIFIED="1606897533825" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
     <SUITE FILE_PATH="coverage/server$pytest_for_test_Plan_test_plan_simulate_inconcrete_member_worked_on_task_in_multiple_roles_decreases_task_effort_if_has_suitable_skill.coverage" NAME="pytest for test_Plan.test_plan_simulate_inconcrete_member_worked_on_task_in_multiple_roles_decreases_task_effort_if_has_suitable_skill Coverage Results" MODIFIED="1610708322460" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
-    <SUITE FILE_PATH="coverage/server$pytest_in__.coverage" NAME="pytest in / Coverage Results" MODIFIED="1610722617836" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/server$pytest_in__.coverage" NAME="pytest in / Coverage Results" MODIFIED="1613369242029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/server$Test__SmallTests.coverage" NAME="Test: / Coverage Results" MODIFIED="1608742834412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/server$pytest_in_test_Outputs_py.coverage" NAME="pytest in test_Outputs.py Coverage Results" MODIFIED="1606898240272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
     <SUITE FILE_PATH="coverage/server$pytest_in_SmallTests.coverage" NAME="pytest in SmallTests Coverage Results" MODIFIED="1606886498148" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />

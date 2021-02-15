@@ -270,7 +270,7 @@ def test_plan_presenter_shows_task_resource_supply():
     assert task_resource_supply_page.read_cell(row=3, col=4).number_format == '0%'
     assert task_resource_supply_page.read_cell(row=3, col=4).highlight == HighlightOutput.ERROR
 
-    assert task_resource_supply_page.get_frozen_row_and_column() == (2, 5)
+    assert task_resource_supply_page.get_frozen_row_and_column() == (2, 4)
 
 def test_task_resource_supply_presenter_shows_excel_for_fake_data():
     fake_plan_reader = FakePlanReader()

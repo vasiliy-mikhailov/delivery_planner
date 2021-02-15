@@ -46,17 +46,16 @@ class ExcelPlanReader:
 
     def __init__(self, file_name_or_io: str):
         self.file_name_or_io: str = file_name_or_io
+        self.file_data_cache: {} = pd.read_excel(file_name_or_io, sheet_name=None)
 
-    def sheet_exists(self, file_name: str, sheet_name: str):
-        try:
-            pd.read_excel(file_name, sheet_name=sheet_name)
-            return True
-        except:
-            return False
+    def sheet_exists(self, sheet_name: str):
+        file_data_cache = self.file_data_cache
+        return sheet_name in file_data_cache
 
     def read_task_ids_to_add_from_sheet(self, sheet_name: str):
         result = []
-        task_ids_to_add_sheet = pd.read_excel(self.file_name_or_io, sheet_name=sheet_name)
+        file_data_cache = self.file_data_cache
+        task_ids_to_add_sheet = file_data_cache[sheet_name]
         for index, row in task_ids_to_add_sheet.iterrows():
             task_id = row['id']
             task_id_input = TaskIdInput(id=task_id)
@@ -66,15 +65,15 @@ class ExcelPlanReader:
 
     def read_task_ids_to_add(self):
         sheet_name = 'Добавить заявки по id'
-        file_name = self.file_name_or_io
-        if self.sheet_exists(file_name=file_name, sheet_name=sheet_name):
+        if self.sheet_exists(sheet_name=sheet_name):
             return self.read_task_ids_to_add_from_sheet(sheet_name=sheet_name)
         else:
             return []
 
     def read_plan_dates(self):
-        period_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Период расчета', header=None, names=['label', 'date'])
-        dates = period_sheet['date'].tolist()
+        file_data_cache = self.file_data_cache
+        period_sheet = file_data_cache['Период расчета']
+        dates = period_sheet['Значение'].tolist()
         start = dates[0].date()
         end = dates[1].date()
         return start, end
@@ -140,7 +139,9 @@ class ExcelPlanReader:
 
     def read_tasks_and_team_members(self):
         tasks = []
-        tasks_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Заявки')
+
+        file_data_cache = self.file_data_cache
+        tasks_sheet = file_data_cache['Заявки']
         for index, row in tasks_sheet.iterrows():
             if self.excel_cell_contains_value(value=row['Заявка на доработку ПО']):
                 task = self.read_task_from_row(row=row, task_name_col='Заявка на доработку ПО')
@@ -196,7 +197,9 @@ class ExcelPlanReader:
 
     def read_predecessors(self, tasks: [TaskInput]):
         result = []
-        tasks_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Заявки')
+
+        file_data_cache = self.file_data_cache
+        tasks_sheet = file_data_cache['Заявки']
         for index, row in tasks_sheet.iterrows():
             task_id = row['id']
             predecessor_ids = row['Предшественники']
@@ -223,7 +226,9 @@ class ExcelPlanReader:
 
     def read_vacations(self):
         result = []
-        vacations_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Отпуска')
+
+        file_data_cache = self.file_data_cache
+        vacations_sheet = file_data_cache['Отпуска']
         for index, row in vacations_sheet.iterrows():
             if row['id ресурса']:
                 resource_id = row['id ресурса']
@@ -236,7 +241,9 @@ class ExcelPlanReader:
 
     def read_existing_resources(self):
         result = []
-        existing_resources_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Существующие ресурсы')
+
+        file_data_cache = self.file_data_cache
+        existing_resources_sheet = file_data_cache['Существующие ресурсы']
         existing_resources_sheet = existing_resources_sheet.fillna('')
         for index, row in existing_resources_sheet.iterrows():
             if row['id']:
@@ -257,7 +264,8 @@ class ExcelPlanReader:
     def read_planned_resources(self):
         result = []
 
-        planned_resources_sheet = pd.read_excel(self.file_name_or_io, sheet_name='Планируемые ресурсы')
+        file_data_cache = self.file_data_cache
+        planned_resources_sheet = file_data_cache['Планируемые ресурсы']
         planned_resources_sheet = planned_resources_sheet.fillna('')
         for index, row in planned_resources_sheet.iterrows():
             planned_resource = PlannedResourceInput(

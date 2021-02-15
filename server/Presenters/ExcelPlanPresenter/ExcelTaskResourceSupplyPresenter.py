@@ -89,9 +89,8 @@ class ExcelTaskResourceSupplyPresenter:
 
         self.present_task_data(start_row=0, start_col=0, page=page)
         self.present_skills(start_row=0, start_col=4, page=page)
-        page.freeze_row_and_column(top_row=2, left_column=5)
+        page.freeze_row_and_column(top_row=2, left_column=4)
         page.auto_fit_column(0)
         page.auto_fit_column(1)
         page.auto_fit_column(2)
         page.auto_fit_column(3)
-        page.auto_fit_column(4)
