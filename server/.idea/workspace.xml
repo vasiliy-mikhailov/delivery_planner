@@ -19,7 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad0460b8-3aa8-43bc-a1fd-533482333c09" name="Default Changelist" comment="excluded django from pytest coverage" />
+    <list default="true" id="ad0460b8-3aa8-43bc-a1fd-533482333c09" name="Default Changelist" comment="excluded django from pytest coverage">
+      <change beforePath="$PROJECT_DIR$/../client/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/../client/.eslintcache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../client/Dockerfile.i1" beforeDir="false" afterPath="$PROJECT_DIR$/../client/Dockerfile.i1" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -285,6 +288,7 @@
       <workItem from="1612367209019" duration="28000" />
       <workItem from="1612417200147" duration="3083000" />
       <workItem from="1613368770422" duration="479000" />
+      <workItem from="1613376779567" duration="7542000" />
     </task>
     <task id="LOCAL-00001" summary="task outputs">
       <created>1606979954249</created>
@@ -352,7 +356,7 @@
     <SUITE FILE_PATH="coverage/server$pytest_in_test_Repositories_py.coverage" NAME="pytest in test_Repositories.py Coverage Results" MODIFIED="1608551177632" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
     <SUITE FILE_PATH="coverage/server$pytest_in_test_Interactors_py.coverage" NAME="pytest in test_Interactors.py Coverage Results" MODIFIED="1606897533825" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
     <SUITE FILE_PATH="coverage/server$pytest_for_test_Plan_test_plan_simulate_inconcrete_member_worked_on_task_in_multiple_roles_decreases_task_effort_if_has_suitable_skill.coverage" NAME="pytest for test_Plan.test_plan_simulate_inconcrete_member_worked_on_task_in_multiple_roles_decreases_task_effort_if_has_suitable_skill Coverage Results" MODIFIED="1610708322460" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
-    <SUITE FILE_PATH="coverage/server$pytest_in__.coverage" NAME="pytest in / Coverage Results" MODIFIED="1613369242029" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/server$pytest_in__.coverage" NAME="pytest in / Coverage Results" MODIFIED="1613384149823" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/server$Test__SmallTests.coverage" NAME="Test: / Coverage Results" MODIFIED="1608742834412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/server$pytest_in_test_Outputs_py.coverage" NAME="pytest in test_Outputs.py Coverage Results" MODIFIED="1606898240272" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />
     <SUITE FILE_PATH="coverage/server$pytest_in_SmallTests.coverage" NAME="pytest in SmallTests Coverage Results" MODIFIED="1606886498148" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SmallTests" />

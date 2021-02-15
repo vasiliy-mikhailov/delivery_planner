@@ -2,6 +2,7 @@ from datetime import date
 from Inputs.TaskInput import TaskInput
 from Inputs.ExistingResourceInput import ExistingResourceInput
 from Inputs.PlannedResourceInput import PlannedResourceInput
+from Inputs.TemporaryResourceInput import TemporaryResourceInput
 from Inputs.VacationInput import VacationInput
 
 
@@ -13,5 +14,6 @@ class PlanInput:
         self.existing_resources: [ExistingResourceInput] = []
         self.vacations: [VacationInput] = []
         self.planned_resources: [PlannedResourceInput] = []
+        self.temporary_resources: [TemporaryResourceInput] = []
         self.task_ids_to_add: [TaskInput] = []
 

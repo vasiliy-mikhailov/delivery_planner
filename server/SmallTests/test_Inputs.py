@@ -5,6 +5,7 @@ import pytest
 
 from Inputs.TaskIdInput import TaskIdInput
 from Inputs.TeamMemberInput import TeamMemberInput
+from Inputs.TemporaryResourceInput import TemporaryResourceInput
 from SmallTests.FakePlanReader import FakePlanReader
 from Inputs.PlanInput import PlanInput
 from Inputs.TaskInput import TaskInput
@@ -24,6 +25,7 @@ def test_plan_input_holds_data():
     assert len(plan_input.existing_resources) == 0
     assert len(plan_input.vacations) == 0
     assert len(plan_input.planned_resources) == 0
+    assert len(plan_input.temporary_resources) == 0
     assert len(plan_input.task_ids_to_add) == 0
 
 
@@ -207,6 +209,22 @@ def test_fake_reader_loads_data():
     assert planned_resource_0.capacity_per_day[0].ability == AbilityEnum.DEVELOPMENT
     assert planned_resource_0.capacity_per_day[0].efficiency == 1
 
+    assert len(plan_input.temporary_resources) == 1
+    temporary_resource_0 = plan_input.temporary_resources[0]
+    assert temporary_resource_0.id == 'TEMPRES-1'
+    assert temporary_resource_0.name == 'Временный ресурс SYS-1'
+    assert temporary_resource_0.business_line == 'BL-1'
+    assert temporary_resource_0.has_start_date == True
+    assert temporary_resource_0.start_date == date(2021, 1, 1)
+    assert temporary_resource_0.has_end_date == True
+    assert temporary_resource_0.end_date == date(2021, 12, 31)
+    assert temporary_resource_0.calendar == 'RU'
+    assert temporary_resource_0.hours_per_day == 8
+    assert len(temporary_resource_0.capacity_per_day) == 1
+    assert temporary_resource_0.capacity_per_day[0].system == 'SYS-1'
+    assert temporary_resource_0.capacity_per_day[0].ability == AbilityEnum.DEVELOPMENT
+    assert temporary_resource_0.capacity_per_day[0].efficiency == 1
+
     assert len(plan_input.vacations) == 1
     assert plan_input.vacations[0].resource_id == 'SOLAR-1'
     assert plan_input.vacations[0].start_date == date(2020, 10, 14)
@@ -259,4 +277,28 @@ def test_task_id_input_holds_data():
 def test_task_id_init_raises_error_if_task_id_is_not_str():
     with pytest.raises(ValueError):
         _ = TaskIdInput(id=1)
+
+def test_planned_temporary_resource_holds_data():
+    temporary_resource = TemporaryResourceInput(
+        id='TEMPRES-1',
+        name='Временный разработчик системы 1',
+        business_line='BL-1',
+        has_start_date=True,
+        start_date=date(2021, 1, 1),
+        has_end_date=True,
+        end_date=date(2021, 12, 31),
+        calendar='RU',
+        hours_per_day=7.0
+    )
+
+    assert temporary_resource.id == 'TEMPRES-1'
+    assert temporary_resource.name == 'Временный разработчик системы 1'
+    assert temporary_resource.business_line == 'BL-1'
+    assert temporary_resource.has_start_date == True
+    assert temporary_resource.start_date == date(2021, 1, 1)
+    assert temporary_resource.has_end_date == True
+    assert temporary_resource.end_date == date(2021, 12, 31)
+    assert temporary_resource.calendar == 'RU'
+    assert temporary_resource.hours_per_day == 7
+    assert len(temporary_resource.capacity_per_day) == 0
 

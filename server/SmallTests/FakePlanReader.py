@@ -7,6 +7,7 @@ from Entities.Skill.AbilityEnum import AbilityEnum
 from Inputs.EffortInput import EffortInput
 from Inputs.CapacityInput import CapacityInput
 from Inputs.PlannedResourceInput import PlannedResourceInput
+from Inputs.TemporaryResourceInput import TemporaryResourceInput
 from Inputs.VacationInput import VacationInput
 
 class FakePlanReader:
@@ -203,6 +204,27 @@ class FakePlanReader:
         ]
         return result
 
+    def generate_temporary_resources(self):
+        temporary_resource_1 = TemporaryResourceInput(
+            id='TEMPRES-1',
+            name='Временный ресурс SYS-1',
+            business_line='BL-1',
+            has_start_date=True,
+            start_date=date(2021, 1, 1),
+            has_end_date=True,
+            end_date=date(2021, 12, 31),
+            calendar='RU',
+            hours_per_day=8
+        )
+        temporary_resource_1.capacity_per_day = [
+            CapacityInput(system='SYS-1', ability=AbilityEnum.DEVELOPMENT, efficiency=1.0)
+        ]
+
+        result = [
+            temporary_resource_1
+        ]
+        return result
+
     def generate_vacations(self):
         vacation_1 = VacationInput(resource_id='SOLAR-1', start_date=date(2020, 10, 14), end_date=date(2020, 10, 15))
         return [vacation_1]
@@ -221,6 +243,7 @@ class FakePlanReader:
         ]
         result.existing_resources = self.generate_existing_resources()
         result.planned_resources = self.generate_planned_resources()
+        result.temporary_resources = self.generate_temporary_resources()
         result.vacations = self.generate_vacations()
         result.task_ids_to_add = self.generate_task_ids_to_add()
 

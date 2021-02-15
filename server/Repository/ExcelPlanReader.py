@@ -10,6 +10,7 @@ from Inputs.CapacityInput import CapacityInput
 from Inputs.ExistingResourceInput import ExistingResourceInput
 from Inputs.PlannedResourceInput import PlannedResourceInput
 from Inputs.TeamMemberInput import TeamMemberInput
+from Inputs.TemporaryResourceInput import TemporaryResourceInput
 from Inputs.VacationInput import VacationInput
 
 
@@ -284,6 +285,47 @@ class ExcelPlanReader:
                 row)
         return result
 
+    def read_temporary_resources(self):
+        result = []
+
+        file_data_cache = self.file_data_cache
+        temporary_resources_sheet = file_data_cache['Временные ресурсы']
+        temporary_resources_sheet = temporary_resources_sheet.fillna('')
+        for index, row in temporary_resources_sheet.iterrows():
+            start_date_value = row['Первый рабочий день (необязательно)']
+            if start_date_value:
+                has_start_date = True
+                start_date = start_date_value.date()
+            else:
+                has_start_date = False
+                start_date = None
+
+            end_date_value = row['Последний рабочий день (необязательно)']
+            if end_date_value:
+                has_end_date = True
+                end_date = end_date_value.date()
+            else:
+                has_end_date = False
+                end_date = None
+
+            temporary_resource = TemporaryResourceInput(
+                id=row['id'],
+                name=row['Название'],
+                business_line=row['Бизнес-линия'],
+                has_start_date=has_start_date,
+                start_date=start_date,
+                has_end_date=has_end_date,
+                end_date=end_date,
+                calendar=row['Календарь'],
+                hours_per_day=float(row['Часов на новый функционал в день'])
+            )
+            result.append(temporary_resource)
+
+            last_resource = result[-1]
+            last_resource.capacity_per_day = last_resource.capacity_per_day + self.read_resource_capacities_from_row(
+                row)
+        return result
+
     def read(self) -> PlanInput:
         start, end = self.read_plan_dates()
         result = PlanInput(start_date=start, end_date=end)
@@ -291,6 +333,7 @@ class ExcelPlanReader:
         result.existing_resources = self.read_existing_resources()
         result.vacations = self.read_vacations()
         result.planned_resources = self.read_planned_resources()
+        result.temporary_resources = self.read_temporary_resources()
         result.tasks = self.read_tasks_and_team_members()
         self.read_predecessors(tasks=result.tasks)
         return result

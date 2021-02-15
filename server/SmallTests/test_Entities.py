@@ -9,6 +9,7 @@ from Entities.Assignment.Assignments import Assignments
 from Entities.Resource.Capacity.Capacities import Capacities
 from Entities.Resource.EfficiencyInTime.ConstantEfficiency import ConstantEfficiency
 from Entities.Resource.EfficiencyInTime.LinearGrowthEfficiency import LinearGrowthEfficiency
+from Entities.Resource.EfficiencyInTime.TimeBoundedConstantEfficiency import TimeBoundedConstantEfficiency
 from Entities.Skill.Skill import Skill
 from Entities.Task.Effort.Efforts import Efforts
 from Entities.Task.SimpleTask import SimpleTask
@@ -144,6 +145,17 @@ def test_linear_growth_efficiency_returns_one_if_start_date_greater_than_full_ef
                                                       full_efficiency_date=date(2019, 1, 1))
     assert linear_growth_efficiency.get_resource_efficiency_for_date(date=date(2019, 1, 1)) == 1.0
 
+def test_time_bounded_constant_efficiency_returns_1_on_day_between_start_and_end():
+    time_bounded_constant_efficiency = TimeBoundedConstantEfficiency(start_date=date(2021, 1, 1), end_date=date(2021, 12, 31))
+
+    assert time_bounded_constant_efficiency.get_resource_efficiency_for_date(date=date(2021, 1, 1)) == 1
+    assert time_bounded_constant_efficiency.get_resource_efficiency_for_date(date=date(2021, 12, 31)) == 1
+
+def test_time_bounded_constant_efficiency_returns_0_on_day_outside_start_and_end():
+    time_bounded_constant_efficiency = TimeBoundedConstantEfficiency(start_date=date(2021, 1, 1), end_date=date(2021, 12, 31))
+
+    assert time_bounded_constant_efficiency.get_resource_efficiency_for_date(date=date(2020, 12, 31)) == 0
+    assert time_bounded_constant_efficiency.get_resource_efficiency_for_date(date=date(2022, 1, 1)) == 0
 
 def test_vacation_calendar_makes_working_day_a_holiday():
     vacation_calendar = VacationCalendar(holidays=[date(2020, 11, 5), date(2020, 11, 6)],

@@ -123,6 +123,49 @@ def test_excel_reader_loads_excel():
     assert planned_resource_0.capacity_per_day[0].ability == AbilityEnum.DEVELOPMENT
     assert planned_resource_0.capacity_per_day[0].efficiency == 1
 
+    assert len(plan_input.temporary_resources) == 3
+    temporary_resources_0 = plan_input.temporary_resources[0]
+    assert temporary_resources_0.id == 'TEMPRES-1'
+    assert temporary_resources_0.business_line == 'BL-1'
+    assert temporary_resources_0.has_start_date == True
+    assert temporary_resources_0.start_date == datetime.date(2021, 1, 1)
+    assert temporary_resources_0.has_end_date == True
+    assert temporary_resources_0.end_date == datetime.date(2021, 12, 31)
+    assert temporary_resources_0.calendar == 'RU'
+    assert temporary_resources_0.hours_per_day == 8
+    assert len(temporary_resources_0.capacity_per_day) == 1
+    assert temporary_resources_0.capacity_per_day[0].system == 'SYS-1'
+    assert temporary_resources_0.capacity_per_day[0].ability == AbilityEnum.DEVELOPMENT
+    assert temporary_resources_0.capacity_per_day[0].efficiency == 1
+
+    temporary_resources_1 = plan_input.temporary_resources[1]
+    assert temporary_resources_1.id == 'TEMPRES-2'
+    assert temporary_resources_1.business_line == 'BL-1'
+    assert temporary_resources_1.has_start_date == False
+    assert temporary_resources_1.start_date == None
+    assert temporary_resources_1.has_end_date == True
+    assert temporary_resources_1.end_date == datetime.date(2021, 12, 31)
+    assert temporary_resources_1.calendar == 'RU'
+    assert temporary_resources_1.hours_per_day == 8
+    assert len(temporary_resources_1.capacity_per_day) == 1
+    assert temporary_resources_1.capacity_per_day[0].system == 'SYS-1'
+    assert temporary_resources_1.capacity_per_day[0].ability == AbilityEnum.DEVELOPMENT
+    assert temporary_resources_1.capacity_per_day[0].efficiency == 1
+
+    temporary_resources_2 = plan_input.temporary_resources[2]
+    assert temporary_resources_2.id == 'TEMPRES-3'
+    assert temporary_resources_2.business_line == 'BL-1'
+    assert temporary_resources_2.has_start_date == True
+    assert temporary_resources_2.start_date == datetime.date(2021, 1, 1)
+    assert temporary_resources_2.has_end_date == False
+    assert temporary_resources_2.end_date == None
+    assert temporary_resources_2.calendar == 'RU'
+    assert temporary_resources_2.hours_per_day == 8
+    assert len(temporary_resources_2.capacity_per_day) == 1
+    assert temporary_resources_2.capacity_per_day[0].system == 'SYS-1'
+    assert temporary_resources_2.capacity_per_day[0].ability == AbilityEnum.DEVELOPMENT
+    assert temporary_resources_2.capacity_per_day[0].efficiency == 1
+
     assert len(plan_input.vacations) == 1
     assert plan_input.vacations[0].resource_id == 'SOLAR-1'
     assert plan_input.vacations[0].start_date == datetime.date(2020, 10, 14)

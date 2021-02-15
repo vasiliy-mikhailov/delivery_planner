@@ -8,6 +8,7 @@ from Entities.Resource.Capacity.Capacities import Capacities
 from Entities.Resource.Capacity.CapacityEntry import CapacityEntry
 from Entities.Resource.EfficiencyInTime.ConstantEfficiency import ConstantEfficiency
 from Entities.Resource.EfficiencyInTime.LinearGrowthEfficiency import LinearGrowthEfficiency
+from Entities.Resource.EfficiencyInTime.TimeBoundedConstantEfficiency import TimeBoundedConstantEfficiency
 from Entities.Resource.Resource import Resource
 from Entities.Resource.SimpleResource import SimpleResource
 from Entities.Skill.Skill import Skill
@@ -226,11 +227,45 @@ class PlanInputToEntitiesConverter:
 
         return result
 
+    def convert_temporary_resources_to_entities(self) -> [SimpleResource]:
+        result = []
+
+        for temporary_resource_input in self.plan_input.temporary_resources:
+            calendar_code = temporary_resource_input.calendar
+            calendar = self.create_calendar_for_code(calendar_code=calendar_code)
+
+            start_date = temporary_resource_input.start_date if temporary_resource_input.has_start_date else self.plan_input.start_date
+            end_date = temporary_resource_input.end_date if temporary_resource_input.has_end_date else self.plan_input.end_date
+
+            time_bounded_constant_efficiency = TimeBoundedConstantEfficiency(
+                start_date=start_date,
+                end_date=end_date
+            )
+
+            capacities = Capacities(work_hours_per_day=temporary_resource_input.hours_per_day, calendar=calendar,
+                                    efficiency_in_time=time_bounded_constant_efficiency)
+
+            capacities.capacity_list = self.convert_capacities_to_entities(temporary_resource_input.capacity_per_day)
+
+            person_resource = SimpleResource(
+                id=temporary_resource_input.id,
+                name=temporary_resource_input.name,
+                work_date_start=start_date,
+                work_date_end=end_date,
+                business_line=temporary_resource_input.business_line,
+                capacities=capacities
+            )
+
+            result.append(person_resource)
+
+        return result
+
     def convert_input_resources_to_entities(self) -> [SimpleResource]:
         existing_resources = self.convert_existing_resources_to_entities()
         planned_resources = self.convert_planned_resources_to_entities()
+        temporary_resources = self.convert_temporary_resources_to_entities()
 
-        return existing_resources + planned_resources
+        return existing_resources + planned_resources + temporary_resources
 
     def find_tasks_by_id_recursive(self, task_id: str, tasks: [Task]):
         result = []

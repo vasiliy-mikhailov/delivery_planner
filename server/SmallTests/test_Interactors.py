@@ -166,7 +166,7 @@ def test_planner_simulates_execution():
 
     sut.convert_input_to_entities()
     assert len(sut.plan.tasks) == 2
-    assert len(sut.plan.resources) == 9
+    assert len(sut.plan.resources) == 10
     sut.simulate_resources_worked_on_task()
 
     assert len(sut.plan.tasks) == 2
@@ -319,7 +319,7 @@ def test_planner_produces_output():
     assert task_2.name == 'Change Request 4'
 
     resource_utilization = plan_output.resource_utilization
-    assert len(resource_utilization.resources) == 9
+    assert len(resource_utilization.resources) == 10
 
     resource_0 = resource_utilization.resources[0]
     assert resource_0.id == 'SOLAR-1'
